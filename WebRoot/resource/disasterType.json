@@ -1,0 +1,250 @@
+[
+    {
+        "text": "地震灾害",
+        "value": "地震灾害",
+        "backColor": "#2d5990",
+        "color": "white",
+        "state": {
+            "expanded": "true"
+        },
+        "selectable": false,
+        "nodes": [
+            {
+                "text": "地震受灾范围与程度",
+                "value": "地震受灾范围与程度"
+            },
+            {
+                "text": "地震烈度图",
+                "value": "地震烈度图"
+            },
+            {
+                "text": "灾区地势",
+                "value": "灾区地势"
+            },
+            {
+                "text": "灾区地貌",
+                "value": "灾区地貌"
+            },
+            {
+                "text": "灾区坡度",
+                "value": "灾区坡度"
+            },
+            {
+                "text": "次生灾害隐患点",
+                "value": "次生灾害隐患点"
+            },
+            {
+                "text": "灾区水系",
+                "value": "灾区水系"
+            },
+            {
+                "text": "灾区居民地",
+                "value": "灾区居民地"
+            },
+            {
+                "text": "应急避难场所分布图",
+                "value": "应急避难场所分布图"
+            },
+            {
+                "text": "灾区医疗资源分布图",
+                "value": "灾区医疗资源分布图"
+            },
+            {
+                "text": "灾区学校",
+                "value": "灾区学校"
+            },
+            {
+                "text": "灾区交通",
+                "value": "灾区交通"
+            },
+            {
+                "text": "灾区通信设施",
+                "value": "灾区通信设施"
+            },
+            {
+                "text": "过渡性安置点",
+                "value": "过渡性安置点"
+            }
+        ]
+    },
+    {
+        "text": "地质灾害",
+        "value": "地质灾害",
+        "backColor": "#2d5990",
+        "color": "white",
+        "state": {
+            "expanded": "true"
+        },
+        "selectable": false,
+        "nodes": [
+            {
+                "text": "地质灾害范围图",
+                "value": "地质灾害范围图"
+            },
+            {
+                "text": "地质灾害隐患点分布图",
+                "value": "地质灾害隐患点分布图"
+            },
+            {
+                "text": "灾区地势",
+                "value": "灾区地势"
+            },
+            {
+                "text": "灾区地貌",
+                "value": "灾区地貌"
+            },
+            {
+                "text": "灾区坡度",
+                "value": "灾区坡度"
+            },
+            {
+                "text": "灾区居民地",
+                "value": "灾区居民地"
+            },
+            {
+                "text": "灾区居民地",
+                "value": "灾区居民地"
+            },
+            {
+                "text": "过渡性安置点",
+                "value": "过渡性安置点"
+            },
+            {
+                "text": "灾区医疗资源分布图",
+                "value": "灾区医疗资源分布图"
+            }
+        ]
+    },
+    {
+        "text": "洪水",
+        "value": "洪水",
+        "backColor": "#2d5990",
+        "color": "white",
+        "state": {
+            "expanded": "true"
+        },
+        "selectable": false,
+        "nodes": [
+            {
+                "text": "水系分布图",
+                "value": "水系分布图"
+            },
+            {
+                "text": "降水",
+                "value": "降水"
+            },
+            {
+                "text": "水工设施分布",
+                "value": "水工设施分布"
+            },
+            {
+                "text": "地形",
+                "value": "地形"
+            },
+            {
+                "text": "灾区土地利用",
+                "value": "灾区土地利用"
+            },
+            {
+                "text": "灾区居民地",
+                "value": "灾区居民地"
+            },
+            {
+                "text": "洪水淹没范围图",
+                "value": "洪水淹没范围图"
+            },
+            {
+                "text": "洪水淹没水深图",
+                "value": "洪水淹没水深图"
+            },
+            {
+                "text": "洪水淹没历时图",
+                "value": "洪水淹没历时图"
+            },
+            {
+                "text": "洪水到达时间图",
+                "value": "洪水到达时间图"
+            },
+            {
+                "text": "避洪转移图",
+                "value": "避洪转移图"
+            }
+        ]
+    },
+    {
+        "text": "森林火灾",
+        "value": "森林火灾",
+        "backColor": "#2d5990",
+        "color": "white",
+        "state": {
+            "expanded": "true"
+        },
+        "selectable": false,
+        "nodes": [
+            {
+                "text": "火源分布",
+                "value": "火源分布"
+            },
+            {
+                "text": "灾区地势",
+                "value": "灾区地势"
+            },
+            {
+                "text": "灾区林业区划",
+                "value": "灾区林业区划"
+            },
+            {
+                "text": "防火机构分布图",
+                "value": "防火机构分布图"
+            },
+            {
+                "text": "交通",
+                "value": "交通"
+            },
+            {
+                "text": "火灾蔓延范围",
+                "value": "火灾蔓延范围"
+            }
+        ]
+    },
+    {
+        "text": "道路交通事故",
+        "value": "道路交通事故",
+        "backColor": "#2d5990",
+        "color": "white",
+        "state": {
+            "expanded": "true"
+        },
+        "selectable": false,
+        "nodes": [
+            {
+                "text": "道路交通事故分布图",
+                "value": "道路交通事故分布图"
+            },
+            {
+                "text": "道路交通拥堵蔓延图",
+                "value": "道路交通拥堵蔓延图"
+            }
+        ]
+    },
+    {
+        "text": "建筑物倒塌",
+        "value": "建筑物倒塌",
+        "backColor": "#2d5990",
+        "color": "white",
+        "state": {
+            "expanded": "true"
+        },
+        "selectable": false,
+        "nodes": [
+            {
+                "text": "倒塌建筑物分布图",
+                "value": "倒塌建筑物分布图"
+            },
+            {
+                "text": "建筑物灾损程度图",
+                "value": "建筑物灾损程度图"
+            }
+        ]
+    }
+]

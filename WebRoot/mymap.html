@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>天津市地理国情服务在线发布系统</title>
+<!--bootstrap core样式-->
+<link rel="stylesheet" href="css/libs/bootstrap.min.css">
+<!--font-awesome样式-->
+<link rel="stylesheet" href="css/libs/font-awesome.min.css">
+<!--bootstrap目录树插件样式-->
+<link rel="stylesheet" href="css/plugins/bootstrapSwitch.css">
+<link rel="stylesheet" href="css/plugins/bootstrap-treeview.css">
+<!--通用布局样式-->
+<link rel="stylesheet" href="css/layout.css">
+<!--页面样式-->
+<link rel="stylesheet" href="css/mymap.css">
+</head>
+
+<body>
+	<!-- 顶部导航区域 Start-->
+	<nav class="navbar navbar-inverse navbar-fixed-top main-title">
+		<i class="fa fa-map" aria-hidden="true"></i> <img class="title-image"
+			src="images/title.png" alt="logo">
+		<div class="pull-right">
+			<ul class="nav navbar-nav title-nav">
+				<li><a id="sys_userName" href="display.html">地图展示</a></li>
+				<li><a href="customize.html">地图定制</a></li>
+				<li><a href="#">我的地图</a></li>
+				<li><a style="text-decoration:underline" href="http://10.2.103.20/hgp/OAlogout">退出</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<!-- 顶部导航区域 End-->
+	<!-- 上部工具栏区域 Start -->
+	<!--   <div class="container">
+    <div class="row">
+      <div class="sort-container">
+        <a href="" class="sort-item active">按时间排序</a>
+        <a href="" class="sort-item">按名称排序</a>
+      </div>
+      <div class="search-container">
+      </div>
+    </div>
+  </div> -->
+  <!-- 上部工具栏区域 End-->
+  <!-- 我的地图区域 Start -->
+  	<div  id="switch"  style="position:absolute;float:right;right:0;margin-top:3px;margin-right:10px">
+		<div class="btn-group" role="group" aria-label="...">
+  <button type="button" class="btn btn-success" onclick="buildMyMapPage()">用户的地图</button>
+  <button type="button" class="btn btn-warning" onclick="buildSharedMapPage()">共享的地图</button>
+</div>
+	</div>
+  <div class="container main-container">
+    <div class="row" style="margin-top:15px">
+     
+    </div>
+    <div id="callBackPager"> </div>
+  </div>
+  <!-- 我的地图区域 End -->
+  <!-- 分享地图模态框 Start-->
+	<div class="modal fade" id="shareMapModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">分享专题图</h4>
+				</div>
+				<div class="modal-body">
+					<div class="control-group">
+						<form class="form-horizontal" role="form">
+							<div class="form-group">
+								<label for="resName" class="col-sm-3 control-label">资源名称：</label>
+								<div class="col-sm-8">
+									<input  class="form-control" id="resName"
+										placeholder="请输入资源名称">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="mapDescribe" class="col-sm-3 control-label">关键字：</label>
+								<div class="col-sm-8">
+									<textarea id="mapKeyword" class="form-control" rows="3"
+										placeholder="请输入关键字"></textarea>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<!-- <button type="button" class="btn btn-default" data-dismiss="modal">取消</button> -->
+					<button type="submit" class="btn btn-primary" onclick="shareMyMap()">确定</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 分享地图模态框 End-->
+  <!-- 修改地图模态框 Start-->
+	<div class="modal fade" id="editMapModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">修改我的地图</h4>
+				</div>
+				<div class="modal-body">
+					<div class="control-group">
+						<form class="form-horizontal" role="form">
+							<div class="form-group">
+								<label for="mapName" class="col-sm-3 control-label">专题图名：</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="mapName"
+										placeholder="请输入专题图名">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="mapDescribe" class="col-sm-3 control-label">地图描述：</label>
+								<div class="col-sm-8">
+									<textarea id="mapDescribe" class="form-control" rows="3"
+										placeholder="请输入地图描述"></textarea>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="submit" class="btn btn-primary" onclick="editMyMap()">确定</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 修改地图模态框 End-->
+
+	<!-- 确认删除模态框start -->
+	<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">请确认</div>
+				<div class="modal-body">确认删除该记录吗？</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<a class="btn btn-danger btn-ok">删除</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 确认删除模态框end -->
+	<!-- 分页栏 Start -->
+	<!--   <div class="page">
+    <span>首页</span>
+    <span>上一页</span>
+    <a href="" class="text-page-tag active">1</a>
+    <a href="" class="text-page-tag">2</a>
+    <a href="" class="text-page-tag">3</a>
+    <a href="" class="text-page-tag">4</a>
+    <a href="" class="text-page-tag">5</a>
+    <a href="" class="text-page-tag">6</a>
+    <a href="" class="text-page-tag">7</a>
+    <a href="">下一页</a>
+    <a href="">尾页</a>
+  </div> -->
+	<!-- 分页栏 End -->
+	<!--  bootstrap core js 引用，jQuery引用必须在bootstrap之前-->
+	<script src="js/libs/jquery.min.js"></script>
+	<script src="js/libs/bootstrap.min.js"></script>
+	<script src="js/plugins/bootstrapSwitch.js"></script>
+	<script src="js/plugins/extendPagination.js"></script>
+	<!--  页面js -->
+	<script src="js/mymap.js"></script>
+</body>
+
+</html>

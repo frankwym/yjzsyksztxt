@@ -1,0 +1,147 @@
+@CHARSET "UTF-8";
+body,
+html {
+  height: 100%;
+}
+
+body {
+  padding-top: 60px;
+  font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+  overflow: hidden;
+}
+
+/******** bootstrap style Start********/
+i{
+  cursor: pointer;
+}
+.modal {
+  min-width: 600px;
+}
+
+
+/******** bootstrap style End********/
+
+
+/********Navbar Start********/
+
+.main-title {
+  padding: 0 1.5em;
+  min-width: 850px;
+  height: 60px;
+  color: #fff;
+  background: #2d5990;
+  border: none;
+}
+
+.title-image {
+  height: 60px;
+  vertical-align: middle;
+}
+
+.title-text {
+  display: inline-block;
+  margin: 0;
+  font-size: 2em;
+  vertical-align: middle;
+}
+
+.main-title .title-nav>li>a {
+  padding: 0 22px;
+  margin-top: 25px;
+  font-size: 16px;
+  color: rgba(255,255,255,0.5);
+  -webkit-transition: all .2s ease-out;
+  transition: all .2s ease-out;
+}
+
+.main-title .title-nav>li:last-child>a {
+  border-right: 0;
+}
+
+.main-title .title-nav>li>a:hover {
+  color: #fff;
+}
+
+.main-title>i {
+  margin-right: -8px;
+  font-size: 26px;
+  vertical-align: middle;
+}
+
+
+/********Navbar End********/
+
+
+/********Sidebar Start********/
+
+.sidebar {
+  position: relative;
+  width: 290px;
+  height: 100%;
+  border-right: 2px solid #448aca;
+  -webkit-transition: all .2s ease-out;
+  transition: all .2s ease-out;
+}
+
+.sidebar-title {
+  margin: 0 10px 10px;
+  padding: 10px 0 8px;
+  color: #2d5990;
+  font-size: 15px;
+  border-bottom: 2px solid #2d5990;
+}
+
+.toggle-btn {
+  position: absolute;
+  left: 288px;
+  top: -60px;
+  bottom: 0;
+  z-index: 100;
+  width: 16px;
+  height: 48px;
+  margin: auto;
+  line-height: 48px;
+  text-align: center;
+  color: #fff;
+  background: #2d5990;
+  border-radius: 0 3px 3px 0;
+  cursor: pointer;
+}
+
+.toggle-btn>i {
+  font-size: 20px;
+  -webkit-transition: all .2s ease-out;
+  transition: all .2s ease-out;
+}
+
+.sidebar-hide {
+  margin-left: -290px;
+}
+
+.sidebar-hide>div>i {
+  margin-left: 1px;
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+
+/********Sidebar End********/
+
+
+/********Main-Section Start********/
+
+.main-section {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  bottom: 0;
+  left: 290px;
+  min-width: 600px;
+  -webkit-transition: all .2s ease-out;
+  transition: all .2s ease-out;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+
+/********Main-Section End********/

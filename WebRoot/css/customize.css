@@ -1,0 +1,563 @@
+@CHARSET "UTF-8";
+
+/********Navbar Start********/
+
+
+/*当前页面的名字高亮*/
+
+.main-title .title-nav>li:nth-child(2)>a {
+  color: #fff;
+}
+
+
+/********Navbar End********/
+
+
+/********Sidebar Start********/
+
+
+/* 目录树滚动区域 */
+
+.scroll-content {
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.scroll-content>div {
+  margin-bottom: 60px;
+}
+
+.badge {
+  background-color: #5cb85c;
+  -webkit-transition: .2s ease-out;
+  transition: .2s ease-out;
+}
+
+.badge:hover {
+  background-color: #ff8723;
+}
+
+.badge-delete {
+  background: rgb(245, 70, 70);
+  -webkit-transition: .2s ease-out;
+  transition: .2s ease-out;
+}
+
+.badge-delete:hover {
+  background: rgb(255, 122, 122);
+}
+
+
+/* 上传数据模态框 */
+
+.file-input {
+  margin-top: 5px;
+}
+
+.table-container {
+  padding: 0 30px;
+}
+
+.excel-table {
+  margin: 20px 0;
+  overflow: auto;
+}
+
+
+/* 地理底图缩略图 */
+
+.map-thumbnail {
+  position: relative;
+  display: inline-block;
+  margin: 7px;
+  width: 120px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 4px 8px 0 rgba(7, 17, 27, .1);
+  box-shadow: 0 4px 8px 0 rgba(7, 17, 27, .1);
+  -webkit-transition: .3s all linear;
+  -o-transition: .3s all linear;
+  transition: .3s all linear;
+  cursor: pointer;
+}
+
+.map-thumbnail:hover {
+  -webkit-box-shadow: 0 8px 16px 0 rgba(7, 17, 27, .2);
+  box-shadow: 0 8px 16px 0 rgba(7, 17, 27, .2);
+}
+
+.map-thumbnail img {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.map-div-title {
+  display: inline-block;
+  width: 100%;
+  height: 40px;
+  padding: 6px 12px;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: #2d5990;
+  color: white;
+}
+
+.map-checked-icon {
+  display: none;
+  position: absolute;
+  right: 0;
+  margin: 5px;
+  font-size: 22px;
+  color: #74c2f4;
+}
+
+
+/* 制图模板模态框 */
+
+.model-container {
+  padding: 0 50px;
+}
+
+.modal-title {
+  font-size: 16px;
+}
+
+#city .panel-body,
+#street .panel-body {
+  padding: 10px 15px;
+}
+
+.panel-title {
+  font-size: 14px;
+}
+
+.collapse-label {
+  margin: 10px;
+}
+
+.collapse-label span {
+  margin-right: 5px;
+}
+
+.collapse-label .form-control {
+  display: inline-block;
+  width: 162px;
+}
+
+.selected-container {
+  display: inline-block;
+  border: 1px solid #d8d8d8;
+  border-radius: 3px;
+}
+
+.option-container {
+  display: inline-block;
+  width: 280px;
+  height: 220px;
+  overflow: auto;
+  border: 1px solid #d8d8d8;
+  border-radius: 5px;
+}
+
+.option-container ul {
+  padding: 0 10px;
+}
+
+.option-container li {
+  display: inline-block;
+  list-style: none;
+  margin: 10px 5px 0 0;
+  cursor: pointer;
+}
+
+.option-container img {
+  margin-right: 10px;
+  border-radius: 3px;
+}
+
+.option-container img:hover,
+.selected-image {
+  box-shadow: 0 0 10px #717171;
+}
+
+
+/********Sidebar End********/
+
+
+/********Main-Section Start********/
+
+
+/* 步骤条 Start*/
+
+.steps-container {
+  padding: 5px;
+  margin: 0 auto;
+  width: 1410px;
+  line-height: 30px;
+  text-align: center;
+  color: #fff;
+  overflow: hidden;
+}
+
+.steps {
+  float: left;
+}
+
+.step-bar {
+  position: relative;
+  float: left;
+  width: 180px;
+  margin-left: 15px;
+  color: #6d6d6d;
+  background: #ececec;
+}
+
+.step-start {
+  border-radius: 3px 0 0 3px;
+}
+
+.step-end {
+  border-radius: 0 3px 3px 0;
+}
+
+.step-start::after,
+.step-inset::after {
+  content: "";
+  position: absolute;
+  left: 180px;
+  border: 15px solid transparent;
+  border-left-color: #ececec;
+}
+
+.step-inset::before,
+.step-end::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  border: 15px solid transparent;
+  border-left-color: #fff;
+}
+
+.step-active {
+  color: #fff;
+  background: #74c2f4;
+}
+
+.step-active::after {
+  border-left-color: #74c2f4;
+}
+
+.step-visited {
+  color: #fff;
+  background: #9ad3f8;
+}
+
+.step-visited::after {
+  border-left-color: #9ad3f8;
+}
+
+.step-btn-group {
+  display: inline-block;
+  float: left;
+  margin-left: 20px;
+}
+
+.step-btn {
+  float: left;
+  width: 85px;
+  margin-right: 6px;
+  color: #fff;
+  background: linear-gradient(45deg,#74c2f4,#aadeff);
+  border-radius: 15px;
+  cursor: pointer;
+  -webkit-transition: .2s ease-out;
+  -o-transition: .2s ease-out;
+  transition: .2s ease-out;
+}
+
+.step-btn:hover {
+  -webkit-box-shadow: 0 0 5px #9bd8ff;
+   box-shadow: 0 0 5px #6895b1; 
+}
+
+.step-btn>i {
+  margin: 0 3px;
+}
+
+/* toolbar */
+.toolbar{
+  float: left;
+  margin-left: 20px;
+  color: #888;
+  font-size: 18px;
+}
+
+/* 独立统计图表 */
+#echartsModal .modal-dialog{
+  width: 1050px;
+}
+#echarts-container{
+  width: 980px;
+  height: 600px;
+}
+.alert-container{
+  position: absolute;
+  left: 50px;
+  right: 50px;
+  z-index: 1;
+}
+/* 文字不能被选中 */
+
+.title-text,
+.sidebar-title,
+.step-bar,
+.step-btn {
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+
+/* 步骤条 End*/
+
+
+/* 主图区域 Start*/
+.progressloader{
+	position: fixed;display:none; width: 100%; height: 100%; top: 0px; left: 0px; z-index: 999; background-color: transparent;
+}
+.map-area {
+  z-index: 1;
+  position: absolute;
+  top: 40px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+
+
+/* 主图区域 End*/
+
+
+/* 图例 Start*/
+
+#legendToggle {
+  display: none
+}
+
+#legendToggle:checked ~ #legend {
+  display: block
+}
+
+#legendToggle:checked ~ #legendBtn {
+  height: 24px;
+  width: 24px;
+  background-image: url(../images/UI/legend_close.png);
+  bottom: 270px;
+}
+
+#legend {
+  position: absolute;
+  bottom: 3px;
+  right: 0;
+  padding: 3px;
+  width: 240px;
+  height: 300px;
+  background-color: #fff;
+  overflow: auto;
+  z-index: 99;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+  border: 2px solid #AEAEAE;
+  display: none;
+  transition: 0.2s ease-out;
+  -webkit-transition: 0.2s ease-out;
+}
+
+.icon-remove {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  cursor: pointer;
+  z-index: 50;
+}
+
+#legendBtn {
+  position: absolute;
+  right: 10px;
+  bottom: 3px;
+  cursor: pointer;
+  transition: ease-out 0.3s;
+  -moz-transition: ease-out 0.2s;
+  -o-transition: ease-out 0.2s;
+  -webkit-transition: ease-out 0.2s;
+  z-index: 1000;
+  height: 32px;
+  width: 32px;
+  background-image: url(../images/UI/Legend_show.png);
+  z-index: 999
+}
+
+#mapLegend {
+  z-index: 100;
+  position: relative;
+}
+
+
+/* 图例 End*/
+
+
+/* === Custom === */
+
+input[type="color"] {
+  padding: 0 5px;
+  width: 60px;
+}
+
+input[type="text"] {
+  padding: 3px 5px;
+  width: 65px;
+  height: 32px;
+}
+
+.custom {
+ width: 245px;
+    height: auto;
+    border: 1px solid #ABABAB;
+    overflow: auto;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 15px;
+}
+
+.custom>p:first-child {
+  margin-top: 0;
+}
+
+.color-level {
+  margin-top: 5px;
+}
+
+.color-level .form-control {
+  height: 25px;
+  vertical-align: middle;
+}
+
+.color-level input[type="hidden"] {
+  margin-left: 15px;
+}
+
+
+/* === END Custom === */
+
+
+/* 统计图精加工start */
+
+#statisticFashioning {
+  margin-left: 65px;
+  width: 150px;
+  margin-top: 10px;
+  margin-bottom: 20px
+}
+
+#mapSave {
+  margin-left: 65px;
+  width: 150px;
+  margin-top: 10px;
+  margin-bottom: 20px
+}
+#statisticAlone {
+  margin-left: 65px;
+  width: 150px;
+  margin-top: 10px;
+  margin-bottom: 20px
+}
+/* 统计图精加工end */
+
+/* 不透明度滑动条 */
+#ex1Slider .slider-selection {
+	background: #448aca;
+}
+#ex2Slider .slider-selection {
+	background: #448aca;
+}
+/* spinner框 */
+/* .spinner {
+  width: 100%;
+}
+.spinner-container{
+	width: 100%;
+}
+.spinner input {
+  text-align: right;
+}
+.input-group-btn-vertical {
+  position: relative;
+  white-space: nowrap;
+  width: 1%;
+  vertical-align: middle;
+  display: table-cell;
+  height:32px;
+}
+.input-group-btn-vertical > .btn {
+  display: block;
+  float: none;
+  width: 100%;
+  max-width: 100%;
+  padding: 8px;
+  margin-left: -1px;
+  position: relative;
+  border-radius: 0;
+}
+.input-group-btn-vertical > .btn:first-child {
+  border-top-right-radius: 4px;
+}
+.input-group-btn-vertical > .btn:last-child {
+  margin-top: -2px;
+  border-bottom-right-radius: 4px;
+}
+.input-group-btn-vertical i{
+  position: absolute;
+  top: 0;
+  left: 4px;
+} */
+
+
+
+
+
+/********Main-Section End********/
+
+/* 图层控制器 */
+.layerCtrlDiv{
+	width:150px;height:155px;background:white;padding: 20px;z-index: 10;top:0px;float:right;
+}
+.layerCtrlDiv p{
+	font-size: 18px;    margin-top: -10px; margin-left: 10px;
+}
+
+.layerCtrlDiv button{
+	background-image: url(../images/close.png);;width: 16px; height: 16px; float: right; border: none;margin-right:-10px
+}
+
+.layerCtrlDiv input{
+	width:18px;height:18px
+}
+.layerCtrlDiv label{
+	font-weight:500;    margin-left: 5px;margin-top: -10px;
+}
+/* 图层控制器 */

@@ -1,0 +1,174 @@
+@CHARSET 'UTF-8';
+body {
+  background: #eff3f5;
+  overflow: auto;
+}
+a{
+  text-decoration: none;
+  cursor: pointer;
+}
+a:hover{
+  text-decoration: none;
+}
+/*当前页面的名字高亮*/
+
+.main-title .title-nav > li:nth-child(3) > a {
+  color: #fff;
+}
+
+
+/* 我的地图区域 Start */
+
+.main-container {
+  min-width: 860px;
+  margin-top: 15px;
+}
+
+
+/* 我的地图区域 End */
+
+
+/* 上部工具栏区域 Start*/
+
+.sort-container {
+  padding: 15px;
+  padding-bottom: 0;
+}
+
+.sort-item {
+  display: inline-block;
+  margin: 0 12px;
+  padding: 5px 10px;
+  color: #7c7c7c;
+}
+
+.sort-item:hover {
+  color: #3498db;
+}
+
+.sort-item.active {
+  border: 1px solid #3498db;
+  border-radius: 20px;
+  font-weight: bold;
+  color: #3498db;
+}
+
+
+/* 上部工具栏区域 End*/
+
+
+/* 地图缩略图样式 Start */
+
+.thumbnail-container {
+  overflow: hidden;
+  min-width: 200px;
+  height: 300px;
+  margin-bottom: 15px;
+  padding-top: 15px;
+  cursor: pointer;
+  -webkit-transition: .2s ease-in-out;
+  -o-transition: .2s ease-in-out;
+  transition: .2s ease-in-out;
+}
+
+.thumbnail-container i {
+  font-size: 16px;
+  color: #7d7d7d;
+}
+
+.thumbnail-container:hover {
+  background: #fff;
+  -webkit-box-shadow: 0 0 12px rgba(0, 0, 0, .1);
+  box-shadow: 0 0 12px rgba(0, 0, 0, .1);
+}
+
+.thumbnail-container:hover .thumbnail-img {
+  -webkit-transform: scale(1.04);
+  -ms-transform: scale(1.04);
+  -o-transform: scale(1.04);
+  transform: scale(1.04);
+}
+
+.thumbnail-map {
+  overflow: hidden;
+  width: 100%;
+  height: 63%;
+}
+
+.thumbnail-img {
+  width: 100%;
+  -webkit-transform: scale(1.006);
+  -ms-transform: scale(1.006);
+  -o-transform: scale(1.006);
+  transform: scale(1.006);
+  -webkit-transition: .2s ease-in-out;
+  -o-transition: .2s ease-in-out;
+  transition: .2s ease-in-out;
+}
+
+.thumbnail-title {
+  font-weight: bold;
+  max-width: 217px;
+  color: #34495e;
+}
+
+.ellipsis {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+/* 地图缩略图样式 End */
+
+
+/* 分页栏样式 Start */
+
+.page {
+  margin: 25px 0;
+  text-align: center;
+}
+
+.page a {
+  margin: 0 8px;
+  color: #4d555d;
+  border-radius: 16px;
+  -webkit-transition: .2s ease-out;
+  -moz-transition: .2s ease-out;
+  transition: .2s ease-out;
+}
+
+.page a,
+.page span,
+.page-disabled {
+  padding: 0 4px;
+  min-width: 32px;
+  line-height: 32px;
+  font-size: 14px;
+  display: inline-block;
+  text-align: center;
+}
+
+.page a.text-page-tag.active {
+  background: #4d555d;
+  color: #fff;
+}
+
+
+.page a.text-page-tag:hover {
+  background: #d9dde1;
+  color: #4d555d;
+}
+
+.page a.text-page-tag.active {
+  background: #4d555d;
+  color: #fff;
+}
+
+.page span {
+  color: #c8cdd2;
+}
+
+
+/* 分页栏样式 End */

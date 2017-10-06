@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>天津市地理国情服务在线发布系统</title>
+<!--bootstrap core样式-->
+<link rel="stylesheet" href="css/libs/bootstrap.min.css">
+<!--font-awesome样式-->
+<link rel="stylesheet" href="css/libs/font-awesome.min.css">
+<!--bootstrap目录树插件样式-->
+<link rel="stylesheet" href="css/plugins/bootstrap-treeview.css">
+<!--通用布局样式-->
+<link rel="stylesheet" href="css/layout.css">
+<!-- 滚动条插件样式 -->
+<link rel="stylesheet"
+	href="js/jquery_scroll/jquery.mCustomScrollbar.css">
+<!--页面样式-->
+<link rel="stylesheet" href="css/display.css">
+<!--浏览图片插件样式-->
+<link rel="stylesheet" href="css/plugins/viewer.css" />
+
+</head>
+
+<body>
+	<!-- 顶部导航区域 Start-->
+	<nav class="navbar navbar-inverse navbar-fixed-top main-title">
+		<i class="fa fa-map" aria-hidden="true"></i> <img class="title-image"
+			src="images/title.png" alt="logo">
+		<div class="pull-right">
+			<ul class="nav navbar-nav title-nav">
+				<li><a id="sys_userName" href="#">地图展示</a>
+				</li>
+				<li><a href="customize.html">地图定制</a>
+				</li>
+				<li><a href="mymap.html">我的地图</a>
+				</li>
+				<li><a style="text-decoration:underline" href="http://10.2.103.20/hgp/OAlogout">退出</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<!-- 顶部导航区域 End-->
+
+	<!-- 左侧参数面板 Start -->
+	<section class="sidebar">
+		<p id="thisMapName" class="sidebar-title">行业专题图</p>
+		<div class="scroll-content">
+			<div id="data-content"></div>
+		</div>
+	</section>
+	<!-- 左侧参数面板 End -->
+
+	<!-- 我的地图区域 Start -->
+	<section class="main-section" style="overflow-y:auto">
+		<div id="container" class="container main-container">
+		
+		</div>
+	</section>
+	<!-- 我的地图区域 End -->
+
+
+	<!--  bootstrap core js 引用，jQuery引用必须在bootstrap之前-->
+	<script src="js/libs/jquery.min.js"></script>
+	<script src="js/libs/bootstrap.min.js"></script>
+	<script src="js/libs/underscore-min.js"></script>
+		<!-- 滚动条插件js -->
+	<script src="js/jquery_scroll/jquery-ui-1.10.4.min.js"></script>
+	<script src="js/jquery_scroll/jquery.mousewheel.min.js"></script>
+	<script src="js/jquery_scroll/jquery.mCustomScrollbar.js"></script>
+	<!-- bootstrap目录树插件js -->
+	<script src="js/plugins/bootstrap-treeview.js"></script>
+	<!--  页面js -->
+	<script src="js/display.js" charset="UTF-8"></script>
+	<script src="js/plugins/viewer.js"></script>
+</body>
+
+</html>

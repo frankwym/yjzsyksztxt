@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="renderer" content="webkit">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>天津市地理国情服务在线发布系统</title>
+  <!--bootstrap core样式-->
+  <link rel="stylesheet" href="css/libs/bootstrap.min.css">
+  <!--font-awesome样式-->
+  <link rel="stylesheet" href="css/libs/font-awesome.min.css">
+  <!--bootstrap目录树插件样式-->
+  <link rel="stylesheet" href="css/plugins/bootstrap-treeview.css">
+  <!--通用布局样式-->
+  <link rel="stylesheet" href="css/layout.css">
+  <!--页面样式-->
+  <link rel="stylesheet" href="css/mymap.css">
+</head>
+
+<body>
+  <!-- 顶部导航区域 Start-->
+  <nav class="navbar navbar-inverse navbar-fixed-top main-title">
+    <i class="fa fa-map" aria-hidden="true"></i>
+    <img class="title-image" src="images/title.png" alt="logo">
+    <div class="pull-right">
+      <ul class="nav navbar-nav title-nav">
+        <li>
+          <a id="sys_userName" href="display.html">地图展示</a>
+        </li>
+        <li>
+          <a href="customize.html">地图定制</a>
+        </li>
+        <li>
+          <a href="#">我的地图</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <!-- 顶部导航区域 End-->
+ 
+  <!-- 我的地图区域 Start -->
+  <div class="container main-container">
+  <img alt="" src="images/mymap/map1.png">
+  </div>
+  <!-- 我的地图区域 End -->
+  
+
+  <!--  bootstrap core js 引用，jQuery引用必须在bootstrap之前-->
+  <script src="js/libs/jquery.min.js"></script>
+  <script src="js/libs/bootstrap.min.js"></script>
+  <!--  页面js -->
+  <script>
+  window.onload=function(){
+  getIamge()
+  }
+  function getIamge(){
+    var image=window.localStorage.getItem("image");
+    alert(image)
+  }
+  
+  </script>
+</body>
+
+</html>

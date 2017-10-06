@@ -1,0 +1,3 @@
+eclipse.preferences.version=1
+validator.Checked=WebRoot/js/jquery.min.js,WebRoot/js/plugins/fakeLoader/js/prettify.js,WebRoot/js/libs/jquery.min.js,WebRoot/js/respond.min.js,WebRoot/js/libs/respond.min.js,WebRoot/js/jquery_scroll/jquery-ui-1.10.4.min.js,WebRoot/js/plugins/fakeLoader/js/jquery.min.js
+validator.Unchecked=

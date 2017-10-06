@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>天津市地理国情服务在线发布系统</title>
+<!--bootstrap core样式-->
+<link rel="stylesheet" href="css/libs/bootstrap.min.css">
+<!--font-awesome样式-->
+<link rel="stylesheet" href="css/libs/font-awesome.min.css">
+<!--bootstrap目录树插件样式-->
+<link rel="stylesheet" href="css/plugins/bootstrap-treeview.css">
+<!-- 滚动条插件样式 -->
+<link rel="stylesheet"
+	href="js/jquery_scroll/jquery.mCustomScrollbar.css">
+<!--通用布局样式-->
+<link rel="stylesheet" href="css/layout.css">
+<!--bootstrap表格插件样式-->
+<link rel="stylesheet" href="css/plugins/bootstrap-table.min.css">
+<!--文件上传插件样式-->
+<link rel="stylesheet" href="css/plugins/fileinput.min.css">
+<!--bootstrap select样式-->
+<link rel="stylesheet" href="css/plugins/bootstrap-select.css">
+<!-- arcgis_js_api样式 -->
+<link rel="stylesheet"
+	href="http://116.62.244.89:8080/arcgis/dijit/themes/tundra/tundra.css" />
+<link rel="stylesheet"
+	href="http://116.62.244.89:8080/arcgis/esri/css/esri.css" />
+<!--页面样式-->
+<link rel="stylesheet" href="css/customize.css">
+<!--bootstrap slider样式-->
+<link rel="stylesheet" href="css/plugins/bootstrap-slider.css">
+<!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.js"></script>
+      <![endif]-->
+</head>
+
+<body>
+	<!-- 顶部导航区域 Start-->
+	<nav class="navbar navbar-inverse navbar-fixed-top main-title">
+	  <i class="fa fa-map" aria-hidden="true"></i>
+		<img class="title-image" src="images/title.png" alt="logo">
+		<div class="pull-right">
+			<ul class="nav navbar-nav title-nav">
+				<li><a id="sys_userName" href="display.html">地图展示</a>
+				</li>
+				<li><a href="customize.html" style="color:#9d9d9d">地图定制</a>
+				</li>
+				<li><a href="mymap.html" style="color:#fff">我的地图</a>
+				</li>
+				<li><a style="text-decoration:underline" href="http://10.2.103.20/hgp/OAlogout">退出</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<!-- 顶部导航区域 End-->
+	<!-- 左侧参数面板 Start -->
+	<section class="sidebar">
+		<div class="toggle-btn">
+			<i class="fa fa-angle-left" aria-hidden="true"></i>
+		</div>
+		<p id="thisMapName" class="sidebar-title">地图名称</p>
+		<div class="scroll-content">
+			<div id="data-content"></div>
+		</div>
+	</section>
+	<!-- 左侧参数面板 End -->
+	<!-- 右侧主图区域 Start -->
+	<section class="main-section">
+	<div class="btn-group" role="group" style="z-index:99;margin-right:40px;float:right;margin-top: 20px;" >
+		<button id="zoom-in" type="button" class="btn btn-default"><li class="fa fa-expand"></button>
+		<button id="zoom-out" type="button" class="btn btn-default"><li class="fa fa-compress"></button>
+		<button id="pan" type="button" class="btn btn-default"><li  class="fa fa-hand-paper-o"></button>
+		<button id="overall" type="button" class="btn btn-default"><li  class="fa fa-arrows-alt"></button>
+			<button id="undependStatistic" onclick="statisticAlone()" type="button" class="btn btn-default"><li  class="fa fa-line-chart"></button>
+		<button id="drawGraphic" type="button" class="btn btn-default"><li class="fa fa-pencil"></button>
+		<button id="layersBtn" onclick="buildLayersCtrl(this)" type="button" class="btn btn-default">
+				<li class="fa fa-list">
+			</button><br/>
+	</div>
+	<div id="myMap" class="map-area" style="top:0px;bottom:0px"></div>
+	</section>
+	<!-- 图例start -->
+	<input id="legendToggle" type='checkbox'>
+	<label id="legendBtn" for="legendToggle"></label>
+	<div id="legend"> 
+		<br/>
+		<img id="class_legend">	
+		<img id="statistic_legend">	
+	</div>
+	<!-- 图例end -->
+	<!-- 右侧主图区域 End -->
+	<!-- 进度提示start -->
+	<div id="progressloader" class="progressloader"></div>
+	<!-- 进度提示end -->
+	<!-- echarts模态框 Start-->
+	<div class="modal fade" id="echartsModal" tabindex="-1" role="dialog"
+		data-backdrop="static" data-keyboard="false"
+		aria-labelledby="echartsModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="echartsModalLabel">独立统计图表</h4>
+				</div>
+				<div class="modal-body">
+					<div class="alert-container"></div>
+					<div class="control-group">
+						<form class="form-horizontal" role="form">
+							<div class="form-group">
+								<label for="areaIndex" class="col-sm-1 control-label">专题选择</label>
+								<div class="col-sm-4">
+									<select id="themeIndex" class="form-control">
+									</select>
+									<!-- <select id="areaIndex" class="selectpicker form-control" title="请选择需要进行统计的区域" multiple
+									show-tick data-size="8" data-actions-box="true" data-selected-text-format="count > 6">
+									</select> -->
+								</div>
+								<!-- <label for="dataSelect" class="col-sm-1 control-label">数据选择</label>
+								<div class="col-sm-4">
+									<select id="dataSelect" class="selectpicker form-control" title="请选择需要进行统计的数据" multiple
+									show-tick data-actions-box="true">
+									</select>
+								</div>
+								<button type="button" id="barChart" class="btn btn-primary">柱状图</button> -->
+								<button type="button" id="statisticAloneBtn"
+									class="btn btn-primary">确定</button>
+							</div>
+						</form>
+					</div>
+					<div id="echarts-container"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- echarts模态框 End-->
+<!-- 新建地图模态框 Start-->
+	<div class="modal fade" id="newMapModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">新建专题图</h4>
+				</div>
+				<div class="modal-body">
+					<div class="control-group">
+						<form class="form-horizontal" role="form">
+							<div class="form-group">
+								<label for="mapName" class="col-sm-3 control-label">专题图名：</label>
+								<div class="col-sm-8">
+									<input  class="form-control" id="mapName"
+										placeholder="请输入专题图名">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="mapDescribe" class="col-sm-3 control-label">地图描述：</label>
+								<div class="col-sm-8">
+									<textarea id="mapDescribe" class="form-control" rows="3"
+										placeholder="请输入地图描述"></textarea>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<!-- <button type="button" class="btn btn-default" data-dismiss="modal">取消</button> -->
+					<button type="submit" class="btn btn-primary" onclick="newMap1()">确定</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 新建地图模态框 End-->
+<!-- 新建模板模态框-->
+	<div class="modal fade" id="newFormatModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">新建制图模板</h4>
+				</div>
+				<div class="modal-body">
+					<div class="control-group">
+						<form class="form-horizontal" role="form">
+							<div class="form-group">
+								<label for="formatName" class="col-sm-3 control-label">模板名称：</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="formatName"
+										placeholder="请输入模板名">
+								</div>
+							</div>
+							<div class="model-container">
+								<div class="panel-group" id="accordion" role="tablist"
+									aria-multiselectable="true">
+									<div class="panel panel-default">
+										<div class="panel-heading" role="tab" id="headingOne">
+											<h4 class="panel-title">
+												<a role="button" data-toggle="collapse"
+													data-parent="#accordion" href="#city" aria-expanded="true"
+													aria-controls="city"> 市区数据 </a>
+											</h4>
+										</div>
+										<div id="city" class="panel-collapse collapse in"
+											role="tabpanel" aria-labelledby="headingOne">
+											<div class="panel-body">
+												<ul class="nav nav-tabs">
+													<li class="active"><a href="#city-color"
+														data-toggle="tab">分级颜色</a></li>
+													<li><a href="#city-chart" data-toggle="tab">图表类型</a>
+													</li>
+												</ul>
+												<div class="tab-content">
+													<div class="tab-pane fade in active color-tab-content"
+														id="city-color">
+														<p class="collapse-label">
+															<span>分级数目</span>
+															<select id="districtClassNum" class="form-control">
+      													<option>3</option>
+      													<option>4</option>
+      													<option>5</option>
+      													<option>6</option>
+      													<option>7</option>
+      													<option>8</option>
+      													<option>9</option>
+      													<option>10</option>
+    													</select> 
+														</p>
+														<p class="collapse-label">
+															<span>分级颜色</span> <img id="districtColor" class="selected-container"
+																src="./images/10/5.jpg" alt="1005">
+														</p>
+														<div class="option-container color-container">
+															<ul></ul>
+														</div>
+													</div>
+													<div class="tab-pane fade chart-tab-content"
+														id="city-chart">
+														<p class="collapse-label">
+															<span>图表类型</span> <img id="districtChart" class="selected-container"
+																src="images/chartIcon/010101.png" alt="10101">
+														</p>
+														<div class="option-container">
+															<ul></ul>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="panel panel-default">
+										<div class="panel-heading" role="tab" id="headingTwo">
+											<h4 class="panel-title">
+												<a class="collapsed" role="button" data-toggle="collapse"
+													data-parent="#accordion" href="#street"
+													aria-expanded="false" aria-controls="street"> 街道数据 </a>
+											</h4>
+										</div>
+										<div id="street" class="panel-collapse collapse"
+											role="tabpanel" aria-labelledby="headingTwo">
+											<div class="panel-body">
+												<ul class="nav nav-tabs">
+													<li class="active"><a href="#street-color"
+														data-toggle="tab">分级颜色</a></li>
+													<li><a href="#street-chart" data-toggle="tab">图表类型</a>
+													</li>
+												</ul>
+												<div class="tab-content">
+													<div class="tab-pane fade in active color-tab-content"
+														id="street-color">
+														<p class="collapse-label">
+															<span>分级数目</span>
+															<select id="streetClassNum" class="form-control">
+      													<option>3</option>
+      													<option>4</option>
+      													<option>5</option>
+      													<option>6</option>
+      													<option>7</option>
+      													<option>8</option>
+      													<option>9</option>
+      													<option>10</option>
+    													</select> 
+														</p>
+														<p class="collapse-label">
+															<span>分级颜色</span> <img id="streetColor" class="selected-container"
+																src="./images/10/5.jpg" alt="1005">
+														</p>
+														<div class="option-container color-container">
+															<ul></ul>
+														</div>
+													</div>
+													<div class="tab-pane fade chart-tab-content"
+														id="street-chart">
+														<p class="collapse-label">
+															<span>图表类型</span> <img id="streetChart" class="selected-container"
+																src="images/chartIcon/010101.png" alt="10101">
+														</p>
+														<div class="option-container">
+															<ul></ul>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary" onclick="newFormat()">确定</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!--  bootstrap core js 引用，jQuery引用必须在bootstrap之前-->
+	<script src="js/libs/jquery.min.js"></script>
+	<script src="js/libs/bootstrap.min.js"></script>
+	
+	<!-- 滚动条插件js -->
+	<script src="js/jquery_scroll/jquery-ui-1.10.4.min.js"></script>
+	<script src="js/jquery_scroll/jquery.mousewheel.min.js"></script>
+	<script src="js/jquery_scroll/jquery.mCustomScrollbar.js"></script>
+	<!-- bootstrap目录树插件js -->
+	<script src="js/plugins/bootstrap-treeview.js"></script>
+	<!-- 文件上传插件js -->
+	<script src="js/plugins/fileinput.min.js"></script>
+	<script src="js/plugins/zh.min.js"></script>
+	<!--bootstrap表格插件js-->
+	<script src="js/plugins/bootstrap-table.min.js"></script>
+	<script src="js/plugins/bootstrap-table-zh-CN.min.js"></script>
+	<!--bootstrap select插件js-->
+	<script src="js/plugins/bootstrap-select.js"></script>
+	<script src="js/minicolor/jquery.minicolors.min.js"></script>
+	<link rel="stylesheet" href="css/plugins/jquery.minicolors.css">
+	<!--bootstrap slider样式-->
+	<script src="js/plugins/bootstrap-slider.js"></script>
+	<script src="js/plugins/bootstrap-slider.min.js"></script>
+	<!-- echarts.js -->
+	<script src=js/libs/echarts.min.js></script>
+	<!-- arcgis_js_api js -->
+	<script
+		src="http://116.62.244.89:8080/arcgis/init.js"></script>
+
+	<script
+		src="http://116.62.244.89:8080/arcgis/drawExtension/tween.js"></script>
+	<!--  页面js -->
+    <script src="js/libs/underscore-min.js"></script>
+	<script src="js/viewmap.js"></script>
+	<script src="js/colorRamp.js"></script>
+	<script src="js/new-map-form.js"></script>
+	<script src="js/plugins/fakeLoader/js/center-loader.js"></script>
+	<script src="js/drawGraphic.js"></script>
+	<script src="js/editChart.js"></script>
+</body>
+
+</html>
