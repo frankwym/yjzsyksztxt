@@ -64,7 +64,7 @@ var navToolBar;
 //编辑饼状图
 var editChart;
 
-//var dataLayer;
+var dataLayer2;
 
 //编辑模板控制
 var isEditForm;
