@@ -64,10 +64,9 @@ var navToolBar;
 //编辑饼状图
 var editChart;
 
-var dataLayer2;
+var dataLayer;
 
-//编辑模板控制
-var isEditForm;
+var cc;
 /* 页面加载完触发的函数 */
 $(function() {
 	 // checkLogin();
