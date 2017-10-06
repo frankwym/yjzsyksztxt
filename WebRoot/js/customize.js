@@ -66,7 +66,8 @@ var editChart;
 
 var dataLayer;
 
-var cc;
+//编辑模板控制
+var isEditForm;
 /* 页面加载完触发的函数 */
 $(function() {
 	 // checkLogin();
