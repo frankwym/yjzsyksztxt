@@ -73,6 +73,10 @@ public class MakeStatisticMap extends HttpServlet {
 		String wcString=request.getParameter("WC");
 		String dcString=request.getParameter("DC");
 		String chartData=request.getParameter("chartData");
+		//将没有数据的值换成0
+		chartData=chartData.replaceAll("null", "0");
+		//将没有数据的值换成0
+		chartData.replaceAll("null", "0");
 		String colorString=request.getParameter("colors");
 		String chartId=request.getParameter("chartId");
 		String widthString=request.getParameter("widthString");

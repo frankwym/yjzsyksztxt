@@ -76,9 +76,9 @@ $(function() {
 	buildInterfaceOfSelectType();
 	$("#newMapModal").modal("show");
 	require(
-			[ "esri/map", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/dijit/Scalebar",
+			[ "mapDefinition/TDTLayer","esri/map", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/dijit/Scalebar",
 					"esri/layers/GraphicsLayer" ,"esri/dijit/Print","esri/dijit/editing/TemplatePicker","esri/toolbars/navigation","esri/toolbars/draw","esri/geometry/geometryEngine","drawExtension/Extension/DrawEx","drawExtension/plotDraw/DrawExt","esri/graphic"],
-			function(Map, ArcGISDynamicMapServiceLayer,Scalebar, GraphicsLayer,Print,TemplatePicker,Navigation,Draw,geometryEngine,DrawEx,DrawExt,Graphic) {
+			function(TDTLayer,Map, ArcGISDynamicMapServiceLayer,Scalebar, GraphicsLayer,Print,TemplatePicker,Navigation,Draw,geometryEngine,DrawEx,DrawExt,Graphic) {
 				esriConfig.defaults.io.proxyUrl = "http://localhost:8080/TJCH_DLGQ/proxy.jsp";
 	            console.log(esriConfig.defaults.io.proxyUrl);
 	            esriConfig.defaults.io.alwaysUseProxy = false;
@@ -101,19 +101,27 @@ $(function() {
                      { "level": 17, "resolution": 1.0728836059570313e-005, "scale": 4508.9354409599309 },  
                      { "level": 18, "resolution": 5.3644180297851563e-006, "scale": 2254.4677204799655 }  
 				];
-				mapContainer = new Map("myMap",{logo:false,lods:lods});
+				mapContainer = new Map("myMap",{logo:false});
+				mapContainer.on("mouse-move",function(e){
+					console.log(e.mapPoint.x+"____"+e.mapPoint.y);
+				});
 				statisticLayer = new GraphicsLayer();
 				classLayer=new GraphicsLayer();
 				drawLayer=new GraphicsLayer();
+				baseMapServiceLayer = new TDTLayer(
+						"vec");
+				
+				/* dataLayer= new ArcGISDynamicMapServiceLayer(
+					"http://localhost:6080/arcgis/rest/services/底图配图/MapServer");*/
+				mapContainer.addLayer(baseMapServiceLayer);
+				mapContainer.removeLayer(baseMapServiceLayer);
 				baseMapServiceLayer = new ArcGISDynamicMapServiceLayer(
-						"http://server.arcgisonline.com/arcgis/rest/services/ESRI_Imagery_World_2D/MapServer");
-				 dataLayer= new ArcGISDynamicMapServiceLayer(
-					"http://server.arcgisonline.com/arcgis/rest/services/ESRI_Imagery_World_2D/MapServer");
+				"http://localhost:6080/arcgis/rest/services/底图配图111/MapServer");
 				mapContainer.addLayer(baseMapServiceLayer);
 				mapContainer.addLayer(classLayer);	
 				mapContainer.addLayer(statisticLayer);	
 				mapContainer.addLayer(drawLayer);	
-				mapContainer.addLayer(dataLayer);	
+				//mapContainer.addLayer(dataLayer);	
 				mapContainer.centerAndZoom({"x": 117.333103, "y": 39.294706, "spatialReference":mapContainer.spatialReference },5);
 				
 				//邦定缩放工具
@@ -579,7 +587,7 @@ function buildInterfaceOfSelectData() {
 	$("#mapPanel2").append('<div id="distributedDatasTree" class="panel-body"></div>');
 	$('#distributedDatasTree').treeview(
 			{
-				data : [{"text":"地震数据","value":"http://localhost:6080/arcgis/rest/services/地震/MapServer"},{"text":"洪涝数据","value":"http://localhost:6080/arcgis/rest/services/洪涝/MapServer"}],
+				data : [{"text":"地震数据","value":"http://localhost:6080/arcgis/rest/services/地震数据/MapServer"},{"text":"洪涝数据","value":"http://localhost:6080/arcgis/rest/services/%E6%B4%AA%E6%B6%9D%E6%95%B0%E6%8D%AE/MapServer"}],
 				onNodeSelected : function(event, data) {
 					require([
 						  "esri/layers/ArcGISDynamicMapServiceLayer"
@@ -589,7 +597,12 @@ function buildInterfaceOfSelectData() {
 						      useMapImage: true
 						    }
 						  );
-						  mapContainer.removeLayer(dataLayer);	
+						  try{
+							  mapContainer.removeLayer(dataLayer);	
+						  }catch(e){
+							  
+						  }
+						  
 						  dataLayer=layer;
 						  mapContainer.addLayer(dataLayer);	
 						});
@@ -604,6 +617,7 @@ function buildInterfaceOfSelectData() {
 					{
 						data : eval("(" + dataList + ")"),
 						onNodeSelected : function(event, data) {
+							CutomizeMapRecords.dataType="UpdataDatatree";
 							var selectedVal=data.value;
 							var allData=$('#statisticDatasTree').treeview('getEnabled', data.nodeId);
 							$("#statisticalTypeDiv").css("display","none");
@@ -996,7 +1010,7 @@ for (i = 0; i < otherMapThumbnailData.length; i++) {
 	    	            			[
 	    	            					"images/mapThumbnail/fzzqb.png",
 	    	            					"区划图",
-	    	            					"http://localhost:6080/arcgis/rest/services/底图配图/MapServer"  ]
+	    	            					"http://localhost:6080/arcgis/rest/services/底图配图111/MapServer"  ]
 	    	            			
 	    	            			
 
@@ -1049,17 +1063,18 @@ for (i = 0; i < otherMapThumbnailData.length; i++) {
 									if(mapName.indexOf("天地图")!=-1){
 										baseMapServiceLayer = new TDTLayer(
 												mapUrl);
-										
+										mapContainer.centerAndZoom({"x": 117.333103, "y": -39.294706, "spatialReference":mapContainer.spatialReference },5);
 									}
 									else if(mapName.indexOf("高德")!=-1){
 										baseMapServiceLayer = new GDLayer();
 									}else{
 										baseMapServiceLayer = new ArcGISDynamicMapServiceLayer(
 												mapUrl);
+										mapContainer.centerAndZoom({"x": 117.333103, "y": 39.294706, "spatialReference":mapContainer.spatialReference },5);
 									}
 									
 									mapContainer.addLayer(baseMapServiceLayer);
-									mapContainer.centerAndZoom({"x": 117.333103, "y": 39.294706, "spatialReference":mapContainer.spatialReference },5);
+									
 								});
 					});
 }
@@ -1424,12 +1439,15 @@ function makeThematicMap() {
 			data : {
 				classificationIndex : CutomizeMapRecords.classificationIndex,
 				statisticalIndex : CutomizeMapRecords.statisticalIndex,
-				dataName : CutomizeMapRecords.dataName,
+				
 				dataType : CutomizeMapRecords.dataType,
-				userName : CutomizeMapRecords.userName,
+				
 				mapFormatName : CutomizeMapRecords.mapFormatName,
 				mapFormatContent : CutomizeMapRecords.mapFormatContent,
-				gradeColors:CutomizeMapRecords.gradeColors
+				gradeColors:CutomizeMapRecords.gradeColors,
+				regionNames:CutomizeMapRecords.thematicMapArea,
+				disastertype:CutomizeMapRecords.disasterType,
+				maptype:CutomizeMapRecords.mapType
 			},
 			type : "post",
 			success : function(res) {
@@ -1864,11 +1882,11 @@ function makeStatisticMap(ChartData){
 										.split(",")[s];
 							}
 							attr["区域"] = coordinateArr[i]["name"];
-							//筛选出选择的制图区域
+							/*//筛选出选择的制图区域
 							if(CutomizeMapRecords.thematicMapArea!=undefined && CutomizeMapRecords.thematicMapArea!="null")
 							if(CutomizeMapRecords.dataType!="TrafficDatatree"&& CutomizeMapRecords.thematicMapArea.indexOf(attr["区域"])<0){
 								continue;
-							}
+							}*/
 							// 构造对应属性
 							var myPoint = {
 								"geometry" : {
@@ -1920,86 +1938,63 @@ function makeClass(data, type) {
 			// $("#statistic_legend").attr('src',"data:image/png;base64,"+"254,250,252,145.00~265.67@253,235,242,265.67~386.33@231,101,155,386.33~507.00");
 		}
 	});
+	console.log(data[13])
+	var classAreaGeo=eval("("+data[13]+")");
 	
+		require(
+				[ "esri/geometry/Polygon",
+						"esri/symbols/PictureMarkerSymbol",
+						"esri/symbols/SimpleLineSymbol",
+						"esri/Color", "esri/graphic",
+						"esri/symbols/SimpleFillSymbol" ],
+				function(Polygon, PictureMarkerSymbol,
+						SimpleLineSymbol, Color, Graphic,
+						SimpleFillSymbol) {
+					for ( var i = 0; i < classAreaGeo.length; i++) {
+						
+						var geometry =classAreaGeo[i];
+						var areaName=arr[i].code;
+					var attr = {};
+					var rgb = arr[i].color.split(",");
+					var value=arr[i].value;
+					attr.value=value;
+					attr.areaName=areaName;
+					var linecolor=[CutomizeMapRecords.lineColor["r"],CutomizeMapRecords.lineColor["g"],CutomizeMapRecords.lineColor["b"],CutomizeMapRecords.lineColor["a"]];
+					var sfs = new SimpleFillSymbol(
+							SimpleLineSymbol.STYLE_SOLID,
+							new SimpleLineSymbol(
+									SimpleLineSymbol.STYLE_SOLID,
+									new Color(
+											linecolor),
+								CutomizeMapRecords.lineWidth),
+							new Color([ parseInt(rgb[0]),
+									parseInt(rgb[1]),
+									parseInt(rgb[2]), 0.5 ]));
 
+					// 构造对应属性
+					var myPoint = {
+						"geometry" : {
+							"rings" : geometry.rings,
+							"spatialReference" : mapContainer.spatialReference
+						},
+						"symbol" : sfs,
+						"attributes" : attr,
+						"infoTemplate" : {
+							"title" : "详细信息",
+							"content" :  "区域:${areaName}<br/>"+CityCodeToCn(CutomizeMapRecords.classificationIndex)+":${value}"
+						}
+					};
+					var gra = new Graphic(myPoint);
+					gra.setSymbol(sfs);
+					classLayer.add(gra);
+				}defer2.resolve("success1");
+				});
+
+
+	
 	
 	// $.ajaxSettings.async = false;
-	$.getJSON(
-					url,
-					function(data) {
-						for ( var i = 0; i < data.features.length; i++) {
-							var name = data.features[i].attributes.NAME;
-							//筛选出选择的制图区域
-							if(CutomizeMapRecords.thematicMapArea!=undefined && CutomizeMapRecords.thematicMapArea!="null")
-							if(CutomizeMapRecords.thematicMapArea.indexOf(name)<0){
-								continue;
-							}
-							var pac = data.features[i].attributes.PAC;
-							
-							var index = -1;
-							for ( var j = 0; j < arr.length; j++) {
-								var a = arr[j].code + "";
-								var b = pac + "";
-								if (a == b) {
-									index = j;
-									break;
-								}
-							}
-							var geometry = data.features[i].geometry;
-							var areaName=data.features[i].attributes.NAME;
-							if(index==-1){
-								continue;
-							}
-							require(
-									[ "esri/geometry/Polygon",
-											"esri/symbols/PictureMarkerSymbol",
-											"esri/symbols/SimpleLineSymbol",
-											"esri/Color", "esri/graphic",
-											"esri/symbols/SimpleFillSymbol" ],
-									function(Polygon, PictureMarkerSymbol,
-											SimpleLineSymbol, Color, Graphic,
-											SimpleFillSymbol) {
-										
-										var attr = {};
-										var rgb = arr[index].color.split(",");
-										var value=arr[index].value;
-										attr.value=value;
-										attr.areaName=areaName;
-										var linecolor=[CutomizeMapRecords.lineColor["r"],CutomizeMapRecords.lineColor["g"],CutomizeMapRecords.lineColor["b"],CutomizeMapRecords.lineColor["a"]];
-										var sfs = new SimpleFillSymbol(
-												SimpleLineSymbol.STYLE_SOLID,
-												new SimpleLineSymbol(
-														SimpleLineSymbol.STYLE_SOLID,
-														new Color(
-																linecolor),
-													CutomizeMapRecords.lineWidth),
-												new Color([ parseInt(rgb[0]),
-														parseInt(rgb[1]),
-														parseInt(rgb[2]), 0.5 ]));
-
-										// 构造对应属性
-										var myPoint = {
-											"geometry" : {
-												"rings" : geometry.rings,
-												"spatialReference" : mapContainer.spatialReference
-											},
-											"symbol" : sfs,
-											"attributes" : attr,
-											"infoTemplate" : {
-												"title" : "详细信息",
-												"content" :  "区域:${areaName}<br/>"+CityCodeToCn(CutomizeMapRecords.classificationIndex)+":${value}"
-											}
-										};
-										var gra = new Graphic(myPoint);
-										gra.setSymbol(sfs);
-										classLayer.add(gra);
-
-									});
-
-						}
-
-						defer2.resolve("success1");});
-	return defer2.promise();
+		return defer2.promise();
 }
 // 控制进度提示页面
 function progressCtr(type) {

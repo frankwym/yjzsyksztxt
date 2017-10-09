@@ -75,6 +75,8 @@ public class MakeStatisticMapLegend extends HttpServlet {
 		String dcString=request.getParameter("DC");
 		String themeData=request.getParameter("chartData");
 		
+		//将没有数据的值换成0
+		themeData=themeData.replaceAll("null", "0");
 		//中文转码
 		//String chartData=new String(themeData.getBytes("ISO-8859-1"),("UTF-8"));
 		String colorString=request.getParameter("colors");
