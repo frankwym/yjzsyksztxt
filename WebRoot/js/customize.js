@@ -255,27 +255,35 @@ function stepShift() {
 	switch (currentStep) {
 		case 1:
 			$(".steps div:eq(0)").addClass('step-active');
+			rebuildMappingInterface();
 			buildInterfaceOfSelectType();
 			break;
 		case 2:
 			$(".steps div:eq(1)").addClass('step-active');
+			rebuildMappingInterface();
 			buildInterfaceOfSelectMap();
 			
 			
 			break;
 		case 3:
+			
 			$(".steps div:eq(2)").addClass('step-active');
+			rebuildMappingInterface();
 			buildInterfaceOfSelectData();
 			
 			break;
 		case 4:
+			
 			$(".steps div:eq(3)").addClass('step-active');
+			rebuildMappingInterface();
 			buildInterfaceOfSelectFormat();
 		
 			break;
 		case 5:
 			$(".steps div:eq(4)").addClass('step-active');
-			
+			 rebuildMappingInterface();
+			buildInterfaceOfPrintMat();
+			buildInterfaceOfParameters();
 			break;
 		case 6:
 			$(".steps div:eq(5)").addClass('step-active');
@@ -651,189 +659,6 @@ function buildInterfaceOfSelectData() {
 						}
 						});
 		}});
-}
-/* build the interface of selectData */
-function buildInterfaceOfSelectData1() {
-	$("#data-content").empty();
-	$("#data-content").append("<div id=\"TrafficDatatree\" ></div>");
-	$("#data-content").append("<div id=\"FloodDatatree\" ></div>");
-	
-	$("#data-content").append("<div id=\"EarthquakeDatatree\" ></div>");
-	$("#data-content").append("<div id=\"FireDatatree\" ></div>");
-	$("#data-content").append("<div id=\"UpdataDatatree\" ></div>");
-	$.ajax({
-		type : "post",
-		url : "./getCustomizeMapDataList",
-		data:{loginId: window.localStorage.getItem("loginId"),username:window.localStorage.getItem("username")},
-		success : function(res) {
-			// build dataTree
-			var treeArr = res.split("s-p-l-i-t");
-			//地震数据
-			$('#EarthquakeDatatree').treeview(
-					{
-						data : eval("(" + treeArr[2] + ")"),
-						onNodeSelected : function(event, data) {
-							var selected = $('#FloodDatatree').treeview(
-									'getSelected');
-							if (selected.length > 0)
-								$('#FloodDatatree').treeview(
-										'unselectNode', [ selected[0].nodeId, {
-											silent : true
-										} ]);
-							selected = $('#UpdataDatatree').treeview(
-									'getSelected');
-							if (selected.length > 0)
-								$('#UpdataDatatree').treeview('unselectNode',
-										[ selected[0].nodeId, {
-											silent : true
-										} ]);
-							selected = $('#TrafficDatatree').treeview(
-							'getSelected');
-					if (selected.length > 0)
-						$('#TrafficDatatree').treeview('unselectNode',
-								[ selected[0].nodeId, {
-									silent : true
-								} ]);
-							buildMapDataIndexModal("EarthquakeDatatree",data);
-						}
-					});
-			//火灾数据
-			$('#FireDatatree').treeview(
-					{
-						data : eval("(" + treeArr[1] + ")"),
-						onNodeSelected : function(event, data) {
-							var selected = $('#FloodDatatree').treeview(
-									'getSelected');
-							if (selected.length > 0)
-								$('#FloodDatatree').treeview(
-										'unselectNode', [ selected[0].nodeId, {
-											silent : true
-										} ]);
-							selected = $('#UpdataDatatree').treeview(
-									'getSelected');
-							if (selected.length > 0)
-								$('#UpdataDatatree').treeview('unselectNode',
-										[ selected[0].nodeId, {
-											silent : true
-										} ]);
-							selected = $('#TrafficDatatree').treeview(
-							'getSelected');
-					if (selected.length > 0)
-						$('#TrafficDatatree').treeview('unselectNode',
-								[ selected[0].nodeId, {
-									silent : true
-								} ]);
-							buildMapDataIndexModal("FireDatatree",data);
-						}
-					});
-			//交通事故数据
-			$('#TrafficDatatree').treeview(
-					{
-						data : eval("(" + treeArr[0] + ")"),
-						showTags : true,
-						onNodeSelected : function(event, data) {
-							var selected = $('#FloodDatatree').treeview(
-									'getSelected');
-							if (selected.length > 0)
-								$('#FloodDatatree').treeview(
-										'unselectNode', [ selected[0].nodeId, {
-											silent : true
-										} ]);
-							selected = $('#UpdataDatatree').treeview(
-									'getSelected');
-							if (selected.length > 0)
-								$('#UpdataDatatree').treeview('unselectNode',
-										[ selected[0].nodeId, {
-											silent : true
-										} ]);
-							selected = $('#FireDatatree').treeview(
-							'getSelected');
-					if (selected.length > 0)
-						$('#FireDatatree').treeview('unselectNode',
-								[ selected[0].nodeId, {
-									silent : true
-								} ]);
-							buildMapDataIndexModal("TrafficDatatree",data);
-						}
-					});
-			
-		
-			//水灾数据
-			$('#FloodDatatree').treeview(
-					{
-						data :eval("(" + treeArr[4] + ")"),
-						onNodeSelected : function(event, data) {
-							var selected = $('#FireDatatree').treeview(
-									'getSelected');
-							if (selected.length > 0)
-								$('#FireDatatree').treeview('unselectNode',
-										[ selected[0].nodeId, {
-											silent : true
-										} ]);
-							selected = $('#UpdataDatatree').treeview(
-									'getSelected');
-							if (selected.length > 0)
-								$('#UpdataDatatree').treeview('unselectNode',
-										[ selected[0].nodeId, {
-											silent : true
-										} ]);
-							selected = $('#TrafficDatatree').treeview(
-							'getSelected');
-					if (selected.length > 0)
-						$('#TrafficDatatree').treeview('unselectNode',
-								[ selected[0].nodeId, {
-									silent : true
-								} ]);
-							
-							buildMapDataIndexModal("FloodDatatree",
-									data);
-						}
-					})
-			//用户上传数据
-			$('#UpdataDatatree').treeview(
-					{
-						data : eval("(" + treeArr[3] + ")"),
-						onNodeSelected : function(event, data) {
-							var selected = $('#FireDatatree').treeview(
-									'getSelected');
-							if (selected.length > 0)
-								$('#FireDatatree').treeview('unselectNode',
-										[ selected[0].nodeId, {
-											silent : true
-										} ]);
-							selected = $('#FloodDatatree').treeview(
-									'getSelected');
-							if (selected.length > 0)
-								$('#FloodDatatree').treeview(
-										'unselectNode', [ selected[0].nodeId, {
-											silent : true
-										} ]);
-							selected = $('#TrafficDatatree').treeview(
-							'getSelected');
-					if (selected.length > 0)
-						$('#TrafficDatatree').treeview('unselectNode',
-								[ selected[0].nodeId, {
-									silent : true
-								} ]);
-							buildMapDataIndexModal("UpdataDatatree", data);
-						},
-						showTags : true
-					});
-			// if the parameters of SelectData have been selected, show the
-			// selected node
-			if (CutomizeMapRecords.dataName != ""
-					&& CutomizeMapRecords.dataType != ""
-					&& CutomizeMapRecords.dataNodeId != "") {
-				$('#' + CutomizeMapRecords.dataType).treeview('selectNode',
-						[ CutomizeMapRecords.dataNodeId, {
-							silent : true
-						} ]);
-			}
-		},
-		error : function(XMLHttpRequest, textStatus, errorThrown) {
-			alert(errorThrown);
-		}
-	});
 }
 /* chose classification index and statistical index of the mapData */
 function buildMapDataIndexModal(dataType, data) {

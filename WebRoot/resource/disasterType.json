@@ -172,8 +172,8 @@
         ]
     },
     {
-        "text": "森林火灾",
-        "value": "森林火灾",
+        "text": "火灾",
+        "value": "火灾",
         "backColor": "#2d5990",
         "color": "white",
         "state": {

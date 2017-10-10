@@ -96,7 +96,7 @@ function GetViewMapInfo() {
 	var mapName,userId,mapId; 
 	mapId=getURLParamsString('mapId'); 
 	mapName = getURLParamsString('mapName'); 
-	userId = window.localStorage.getItem("username");
+	userId = window.localStorage.getItem("username"); 
 	var dataParams=null;
 	if(mapId!=null){
 		SAVE_INDEX=1;

@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,10 +75,14 @@ public class UploadImage extends HttpServlet {
 		String mapId = null;
 		// 构建路径保存
 		String MapId = null;
-		String pathTemp = request.getServletContext().getRealPath("/")+"//resource//printMap//";
-		String path = request.getServletContext().getRealPath("/")+"//resource//printMap//";
+		String pathTemp = request.getServletContext().getRealPath("/")+"//resource//printMap//temporaryIMG//";
+		String path = request.getServletContext().getRealPath("/")+"//resource//printMap//temporaryIMG//";
 		// 消息提示
 		String message = "";
+		//获取当前时间
+		Date date=new Date();
+		  DateFormat format=new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+		  String time=format.format(date);
 		try {
 			// 使用Apache文件上传组件处理文件上传步骤：
 			// 1、创建一个DiskFileItemFactory工厂
@@ -98,42 +105,19 @@ public class UploadImage extends HttpServlet {
 					// 解决普通输入项的数据的中文乱码问题
 					String value = item.getString("UTF-8");
 					System.out.println(name + "--" + value);
-					if ("mapId".equals(name)) {
-						mapId = value;
-					}
+					
 					if ("mapName".equals(name)) {
 						mapName = value;
 					}
 					if ("userId".equals(name)) {
 						userId = value;
 					}
-
-				
 					if (mapName != null && !"".equals(mapName)
-							&& !"null".equals(mapName) && userId != null
-							&& !"".equals(userId) && !"null".equals(userId)
-							&& MapId == null) {
-						QueryRunner qr = new QueryRunner(
-								JdbcUtils.getDataSource());
-						String sql = "select t.rowid from WHU_CUSTOMMAP t where mapname=? and userid=?";
-						Object[] params = { mapName, userId };
-						try {
-							MapId = ""
-									+ qr.query(sql, new ScalarHandler(), params);
-							System.out.println(MapId);
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					} else if (mapId != null && !"".equals(mapId)
-							&& !"null".equals(mapId) && MapId == null) {
-						MapId = mapId;
-					}
-
-					if (MapId != null && !"".equals(MapId)
-							&& !"null".equals(MapId)) {
-						System.out.println(MapId);
-						path += MapId;
+							&& !"null".equals(mapName)&&userId != null && !"".equals(userId)
+									&& !"null".equals(userId)) {
+						
+						
+						path += userId+"_"+mapName+"_"+time;
 						File file = new File(path);
 						if (!file.exists()) {
 							file.mkdirs();
@@ -184,7 +168,7 @@ public class UploadImage extends HttpServlet {
 			message = "文件上传失败！";
 			e.printStackTrace();
 		}
-		message = "./resource//printMap//"+MapId+"//pic.png";
+		message = "./resource//printMap//temporaryIMG//"+userId+"_"+mapName+"_"+time+"//pic.png";
 		message="{\"msg\":\""+message+"\"}";
 		printWriter.write(message);
 	}
