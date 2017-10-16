@@ -70,11 +70,11 @@ var dataLayer;
 var isEditForm;
 /* 页面加载完触发的函数 */
 $(function() {
-	 // checkLogin();
+
 	CutomizeMapRecords.userName= window.localStorage.getItem("username");
 	$(".scroll-content").mCustomScrollbar();
 	buildInterfaceOfSelectType();
-	$("#newMapModal").modal("show");
+	//$("#newMapModal").modal("show");
 	require(
 			[ "mapDefinition/TDTLayer","esri/map", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/dijit/Scalebar",
 					"esri/layers/GraphicsLayer" ,"esri/dijit/Print","esri/dijit/editing/TemplatePicker","esri/toolbars/navigation","esri/toolbars/draw","esri/geometry/geometryEngine","drawExtension/Extension/DrawEx","drawExtension/plotDraw/DrawExt","esri/graphic"],
@@ -102,9 +102,9 @@ $(function() {
                      { "level": 18, "resolution": 5.3644180297851563e-006, "scale": 2254.4677204799655 }  
 				];
 				mapContainer = new Map("myMap",{logo:false});
-				mapContainer.on("mouse-move",function(e){
+				/*mapContainer.on("mouse-move",function(e){
 					console.log(e.mapPoint.x+"____"+e.mapPoint.y);
-				});
+				});*/
 				statisticLayer = new GraphicsLayer();
 				classLayer=new GraphicsLayer();
 				drawLayer=new GraphicsLayer();
@@ -116,13 +116,13 @@ $(function() {
 				mapContainer.addLayer(baseMapServiceLayer);
 				mapContainer.removeLayer(baseMapServiceLayer);
 				baseMapServiceLayer = new ArcGISDynamicMapServiceLayer(
-				"http://localhost:6080/arcgis/rest/services/底图配图111/MapServer");
+				"http://192.168.1.120:6080/arcgis/rest/services/whu_map/whu_basemap/MapServer");
 				mapContainer.addLayer(baseMapServiceLayer);
 				mapContainer.addLayer(classLayer);	
 				mapContainer.addLayer(statisticLayer);	
 				mapContainer.addLayer(drawLayer);	
 				//mapContainer.addLayer(dataLayer);	
-				mapContainer.centerAndZoom({"x": 117.333103, "y": 39.294706, "spatialReference":mapContainer.spatialReference },5);
+				mapContainer.centerAndZoom({"x": 100.49380856640624, "y": 34.41952289453124, "spatialReference":mapContainer.spatialReference },2);
 				
 				//邦定缩放工具
 				navToolBar=new Navigation(mapContainer);
@@ -136,8 +136,8 @@ $(function() {
 					navToolBar.activate(Navigation.PAN);
 				});
 				$("#overall").click(function(){
-					mapContainer.centerAndZoom({"x": 117.333103, "y": 39.294706, "spatialReference":mapContainer.spatialReference },5);
-				});
+					mapContainer.centerAndZoom({"x": 100.49380856640624, "y": 34.41952289453124, "spatialReference":mapContainer.spatialReference },2);
+									});
 				var scalebar = new Scalebar({
 			          map: mapContainer,
 			          // "dual" displays both miles and kilometers
@@ -189,54 +189,9 @@ $(function() {
 					$('#tuyapane').draggable("enable");
 				});
 			});
+	
 });
 
-/* 判断是否登录 */
-function checkLogin(){
-	   // 从url中获取参数
-    function getURLParamsString(name) {
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-        var r = window.location.search.substr(1).match(reg);
-        if (r != null) return unescape(r[2]);
-        return null;
-    }
-
-    function isLogin(token) {
-        $.ajax({
-            url: './IsLogin',
-            type: 'POST',
-            data: {
-                token: token
-            },
-            success: function (res) {
-                if (res != "") {
-                    res=eval("("+res+")")
-                    window.localStorage.setItem("token", res.token); 
-                    window.localStorage.setItem("loginId", res.loginId.split(",")[0]);
-                    window.localStorage.setItem("username", res.loginId.split(",")[1]);
-                    window.localStorage.setItem("viewname", res.loginId.split(",")[2]);
-                } else {
-                     window.location.href = LOGIN_URL;
-                }
-            },
-            error: function (res) {
-                window.location.href = LOGIN_URL;
-                alert("发生错误");	
-            }
-        });
-    }
-
-    var token = getURLParamsString("token");
-    var username = getURLParamsString("username");
-
-    if (token != null) {
-        isLogin(token);
-    } else {
-        window.location.href = LOGIN_URL;
-    }
-
-}
-/* 侧边栏收缩动画 */
 $(".toggle-btn").click(function() {
 	if (!sidebarHide) {
 		sidebarHide = true;
@@ -281,14 +236,17 @@ function stepShift() {
 			break;
 		case 5:
 			$(".steps div:eq(4)").addClass('step-active');
-			 rebuildMappingInterface();
-			buildInterfaceOfPrintMat();
-			buildInterfaceOfParameters();
+			rebuildMappingInterface();	
+			progressCtr("show");
+			makeThematicMap();
+			buildPreviewInterface(1);
+			
 			break;
 		case 6:
 			$(".steps div:eq(5)").addClass('step-active');
-			progressCtr("show");
-			makeThematicMap();
+			 rebuildMappingInterface();
+			buildInterfaceOfPrintMat();
+			buildInterfaceOfParameters();
 		}
 	for ( var i = 0; i < currentStep - 1; i++) {
 		$(".steps div:eq(" + i + ")").addClass('step-visited');
@@ -443,8 +401,13 @@ function buildInterfaceOfSelectType() {
 	
 	$("#data-content").empty();
 	//从json中填充灾害种类
+	$("#data-content").append("<div id=\"mapMatedata1\" style=\"margin:0 20px\" ></div>");
+	$("#mapMatedata1").append("<br/><label >地图名称：</label>");
+	$("#mapMatedata1").append("<br/><textarea id=\"mapName\" style=\"width:100%;height:35px\"></textarea>");
+	$("#mapMatedata1").append("<br/><br/><label >地图描述：</label>");
+	$("#mapMatedata1").append("<br/><textarea id=\"mapDescribe\" style=\"width:100%;height:35px\"></textarea>");
 	$("#data-content").append("<div id=\"disasterType\" style=\"margin:0 20px\" ></div>");
-	$("#disasterType").append("<label >灾害种类：</label>");
+	$("#disasterType").append("<br/><label >灾害种类：</label>");
 	$("#disasterType").append("<div class=\"col-sm-12\"><select id=\"disasterTypeSelection\"  class=\"selectpicker show-menu-arrow form-control\" multiple data-max-options=\"1\"></select></div>");
 	$("#data-content").append("<br/><br/><div id=\"mapType\" style=\"margin:20px\" ></div>");
 	$("#mapType").append("<label >图件种类：</label>");
@@ -502,9 +465,9 @@ function buildInterfaceOfSelectType() {
 		$("#disasterTypeSelection").selectpicker("refresh");
 		//如果灾害种类已经选择过，还原设置
 		if(CutomizeMapRecords.disasterType!=""){
-			$("#disasterTypeSelection").find("option").each(function(){  
+			/*$("#disasterTypeSelection").find("option").each(function(){  
 	            $(this).removeAttr("selected");  
-	        });  
+	        });  */
 	        $("#disasterTypeSelection").find("option").each(function(){  
 	            if(CutomizeMapRecords.disasterType == $(this).val()){  
 	               $(this).attr("selected","selected");  
@@ -516,6 +479,8 @@ function buildInterfaceOfSelectType() {
 		$("#mapScopeStr").val(CutomizeMapRecords.mapScopeStr);
 		$("#mapUnitName").val(CutomizeMapRecords.mapUnitName);
 		$("#mapUnitTel").val(CutomizeMapRecords.mapUnitTel);
+		$("#mapName").val(CutomizeMapRecords.mapName);
+		$("#mapDescribe").val(CutomizeMapRecords.mapDescribe);
 	});
 	
 //填充制图范围种类下拉菜单 	
@@ -554,13 +519,14 @@ function buildInterfaceOfSelectType() {
 	$("#submitDisasterTpye").on("click",function(){
 		require(["esri/geometry/jsonUtils"], function(geometryJsonUtils) { 
 		try{
-			
+			SAVE_INDEX=0;
+		     	newMap();
 				var mapScopeStr=$("#mapScopeStr").val();
 				var mapUnitName=$("#mapUnitName").val();
 				var  mapUnitTel=$("#mapUnitTel").val();
 				var disasterType=$("#disasterTypeSelection option:selected").val();
 				var mapType=$("#mapTypeSelection option:selected").val();
-				if(mapScopeStr==""){
+				if(mapScopeStr==""&&CutomizeMapRecords.mapName!=""&&CutomizeMapRecords.mapDescribe!=""){
 					alert("请补充完整信息");
 					return;
 				}
@@ -572,11 +538,12 @@ function buildInterfaceOfSelectType() {
 				CutomizeMapRecords.mapUnitTel=mapUnitTel;
 				CutomizeMapRecords.disasterType=disasterType;
 				CutomizeMapRecords.mapType=mapType;
+				$("#next-step").click();
 			
 		}catch(e){
 			alert(e.message);
 		}
-		$("#next-step").click();
+		
 		});
 	}); 
 }
@@ -642,7 +609,7 @@ function buildInterfaceOfSelectData() {
 							$.ajax({
 								type : "post",
 								url : "./getRegionCode",
-								data:{Type:"REGION_DISTRIC"	},
+								data:{Type:"WHU_REGION_DISTRIC"	},
 								success : function(res) {
 									var thisAreaJson=res.trim().split(",");
 									for(var i=0;i<thisAreaJson.length;i++){
@@ -781,7 +748,7 @@ function buildInterfaceOfSelectMap() {
 	if (CutomizeMapRecords.mapName == "") {
 	$("#pre-step").click();
 	alert("请输入地图名称");
-	$("#newMapModal").modal("show");
+	//$("#newMapModal").modal("show");
 	return;
 }
 	
@@ -797,11 +764,11 @@ function buildInterfaceOfSelectMap() {
 	$("#mapPanel2").append('<div class="panel-body"></div>');
 var otherMapThumbnailData=[
 	[
-		"images/mapThumbnail/reliefShading_danya.JPG",
+		"images/mapThumbnail/region.jpg",
 		"天地图政区图",
 		"vec" ],
 [
-		"images/mapThumbnail/dom.JPG",
+		"images/mapThumbnail/image.jpg",
 		"天地图影像图",
 		"img" ]
 ];
@@ -815,7 +782,7 @@ for (i = 0; i < otherMapThumbnailData.length; i++) {
 				+ '"><p>'
 				+ otherMapThumbnailData[i][1]
 				+ '</p></div>';
-		$("#mapPanel1").children(".panel-body").append(
+		$("#mapPanel2").children(".panel-body").append(
 				otherMapThumbnailElement);
 	} else {
 		var otherMapThumbnailElement = '<div class="map-thumbnail"><i class="map-checked-icon map-checked-icon fa fa-check-circle" aria-hidden="true"></i><img src="'
@@ -833,7 +800,7 @@ for (i = 0; i < otherMapThumbnailData.length; i++) {
 	var mapThumbnailData = [
 	    					
 	    	            			[
-	    	            					"images/mapThumbnail/fzzqb.png",
+	    	            					"images/mapThumbnail/region.jpg",
 	    	            					"区划图",
 	    	            					"http://localhost:6080/arcgis/rest/services/底图配图111/MapServer"  ]
 	    	            			
@@ -888,15 +855,15 @@ for (i = 0; i < otherMapThumbnailData.length; i++) {
 									if(mapName.indexOf("天地图")!=-1){
 										baseMapServiceLayer = new TDTLayer(
 												mapUrl);
-										mapContainer.centerAndZoom({"x": 117.333103, "y": -39.294706, "spatialReference":mapContainer.spatialReference },5);
-									}
+										mapContainer.centerAndZoom({"x": 100.49380856640624, "y": 34.41952289453124, "spatialReference":mapContainer.spatialReference },2);
+												}
 									else if(mapName.indexOf("高德")!=-1){
 										baseMapServiceLayer = new GDLayer();
 									}else{
 										baseMapServiceLayer = new ArcGISDynamicMapServiceLayer(
 												mapUrl);
-										mapContainer.centerAndZoom({"x": 117.333103, "y": 39.294706, "spatialReference":mapContainer.spatialReference },5);
-									}
+										mapContainer.centerAndZoom({"x": 100.49380856640624, "y": 34.41952289453124, "spatialReference":mapContainer.spatialReference },2);
+												}
 									
 									mapContainer.addLayer(baseMapServiceLayer);
 									
@@ -1090,11 +1057,10 @@ function newFormat() {
 var coordinate;
 //用于专题制图的数据
 var thematicData;
-// 获取制图参数，并制图
-function makeThematicMap() {
-	classLayer.clear();
-	statisticLayer.clear();
-	if(CutomizeMapRecords.gradeColors==""){// 如果还没有选择分级颜色，则为第一次出现精加工界面
+//预览图的界面
+function buildPreviewInterface(type){
+
+	if(type==1&&CutomizeMapRecords.gradeColors==""){// 如果还没有选择分级颜色，则为第一次出现精加工界面
 		$("#data-content").empty();	
 		$("#data-content").append(
 		"<button id=\"statisticAlone\" type=\"button\" class=\"btn btn-warning\" onclick=\"statisticAlone();\">独立统计</button>");
@@ -1106,155 +1072,31 @@ function makeThematicMap() {
 		"<br/>");
 		$("#data-content").append(
 		"<button id=\"mapSave\" type=\"button\" class=\"btn btn-success\" onclick=\"saveCustomizeMap();\">保存</button>");
+	
+	}
+
+	else if(type==1&&CutomizeMapRecords.gradeColors!=""){// 如果还没有选择分级颜色，则为非第一次出现精加工界面
+		$("#data-content").empty();	
+		$("#data-content").append(
+		"<button id=\"statisticAlone\" type=\"button\" class=\"btn btn-warning\" onclick=\"statisticAlone();\">独立统计</button>");
+		$("#data-content").append(
+		"<br/>");	
+		$("#data-content").append(
+		"<button id=\"statisticFashioning\" type=\"button\" class=\"btn btn-primary\" onclick=\"reMakeClasspanel()\">地图精加工</button>");
+		$("#data-content").append(
+		"<br/>");
+		$("#data-content").append(
+		"<button id=\"mapSave\" type=\"button\" class=\"btn btn-success\" onclick=\"saveCustomizeMap();\">保存</button>");
 		
 	}
+}
+// 获取制图参数，并制图
+function makeThematicMap() {
+	classLayer.clear();
+	statisticLayer.clear();
 	
 	
-	
-	//统计年鉴数据
-	if(CutomizeMapRecords.dataType=="TrafficDatatree"){
-		// get data of thematic map
-		$.getJSON("resource/StatisticYearbook.json",function(nodes){
-			nodes=nodes[0].nodes;
-			nodes=_.filter(nodes,function(temp){return  temp["text"]==CutomizeMapRecords.dataName;})[0].nodes;
-			$.getJSON("resource/district.json",
-					function(areaJson) {
-				areaJson=areaJson.features;
-				$.getJSON("./GetStatisticYearBookData",
-						function(data) {
-					
-					//过滤年份数据
-					data= _.filter(data, function(temp){ return temp["YEAR"] == CutomizeMapRecords.dataName; });
-					thematicData=data;
-					// 构造统计专题数据中每条记录的坐标数组
-					 coordinate=[];
-					for(var j=0;j<data.length;j++){	
-						var item=[];
-						for(var i=0;i<areaJson.length;i++){
-							if(data[j]["GEOCODE"]==areaJson[i]["attributes"]["PAC"]){
-								item["x"]=areaJson[i]["attributes"]["x"];
-								item["y"]=areaJson[i]["attributes"]["y"];
-								item["name"]=areaJson[i]["attributes"]["NAME"];
-								item["PAC"]=areaJson[i]["attributes"]["PAC"];
-							}
-							
-						}
-						coordinate.push(item);
-					}
-					// 构造分级数据
-					 classData=[];
-					if(CutomizeMapRecords.classificationIndex!=""&&CutomizeMapRecords.classificationIndex!=undefined){
-						//找到对应的英文字段名
-						var classificationIndex=_.filter(nodes,function(temp){return  temp["text"]==CutomizeMapRecords.classificationIndex;})[0].value
-						if(classificationIndex!="")
-						for(var i=0;i<data.length;i++){
-							var item="";
-							var value=data[i][classificationIndex];
-							if(value==undefined){
-								value=0;
-							}
-							if(data[i]["GEOCODE"]=="120000000000"){
-								continue;
-							}
-							classData.push({
-								"code":data[i]["GEOCODE"],
-								"value":value
-								});
-						}
-					}
-					
-					$.ajax({
-						url : "./makeChartParam",
-						data : {
-							classificationIndex : CutomizeMapRecords.classificationIndex,
-							statisticalIndex : CutomizeMapRecords.statisticalIndex,
-							dataName : CutomizeMapRecords.dataName,
-							dataType : CutomizeMapRecords.dataType,
-							userName : CutomizeMapRecords.userName,
-							mapFormatName : CutomizeMapRecords.mapFormatName,
-							mapFormatContent : CutomizeMapRecords.mapFormatContent,
-							gradeColors:CutomizeMapRecords.gradeColors,
-							classData:JSON.stringify(classData)
-						},
-						type : "post",
-						success : function(res) {
-							ChartData = res.split("&");
-							CutomizeMapRecords.statisticalData=ChartData;
-							if(CutomizeMapRecords.gradeColors!=""){	
-								makeClass(ChartData, "district");
-								//return;
-							}
-							ChartData[9]=coordinate;
-							// 通过变换统计专题数据生成符合makeStatisticMap的参数，并执行制作统计专题图
-							function transforMakeStatisticMap(){
-								var statisticalIndex=CutomizeMapRecords.statisticalIndex.split(",");
-								
-								var statisticalIndexEn=[];
-								//中英文转化
-								for(var i=0;i<statisticalIndex.length;i++){
-									var  temp=_.filter(nodes,function(temp){return  temp["text"]==statisticalIndex[i];})[0].value
-									statisticalIndexEn.push(temp);
-								}
-								
-								var unit="";
-								var num=""
-								for(var j=0;j<statisticalIndex.length;j++){
-									num=num+","+statisticalIndex[j];
-									unit=unit+","+"个";
-								}
-								var  values="";
-								for(var i=0;i<data.length;i++){
-									var item="";
-									for(var j=0;j<statisticalIndex.length;j++){
-										var index=statisticalIndexEn[j];
-										var value=data[i][index];
-										if(value==undefined){
-											value=0;
-										}
-										if(j==0){
-											item=value;
-										}
-										else{
-											item=item+","+value;
-										}
-										
-									}
-									values=values+";"+item+","+(i+1)+",0,0,"+(i+1);
-								}								
-								var chartdata=num.substring(1)+";"+unit.substring(1)+values;
-								ChartData[3]=chartdata;
-								$.when(makeStatisticMap(ChartData)).done(function(data){
-							           progressCtr("hide");
-							        });
-							}
-							// if there is classificationIndex
-							if (CutomizeMapRecords.classificationIndex != "") {
-								// geoArr = eval("(" + ChartData[10] + ")");
-								 $.when(makeClass(ChartData, "district")).done(function(data){
-									// 为了让统计专题图的图层在分级专题图图层之上
-									// if there is statisticalIndex
-									if (CutomizeMapRecords.statisticalIndex != "") {
-										transforMakeStatisticMap();
-										return;
-									}else{
-										progressCtr("hide");
-									}
-						        });
-							}
-							else if (CutomizeMapRecords.statisticalIndex != "") {
-								transforMakeStatisticMap();
-							}
-							
-			        
-						
-							mapContainer.centerAndZoom({"x": 117.333103, "y": 39.294706, "spatialReference":mapContainer.spatialReference },0);
-							
-							}});
-					
-				});
-			})
-		});
-	}
+
 	if(CutomizeMapRecords.dataType=="UpdataDatatree"){
 		// get data of thematic map
 		var ChartData = "";
@@ -1277,19 +1119,25 @@ function makeThematicMap() {
 			type : "post",
 			success : function(res) {
 				ChartData = res.trim().split("&");
-				CutomizeMapRecords.statisticalData=ChartData;
-				/*if(CutomizeMapRecords.gradeColors!=""){
-					makeClass(ChartData, ChartData[2])
-					return;
-				}*/
+				
+				
 				 ChartData[9]=eval("(" + ChartData[9] + ")");
 				 thematicData=ChartData;
 				 coordinate=ChartData[9];
+				
 				 function transforMakeStatisticMap(){
-						
-						$.when(makeStatisticMap(ChartData)).done(function(data){
-					           progressCtr("hide");
-					        });
+					 
+					 if(CutomizeMapRecords.gradeColors!=""){
+							$.when(makeStatisticMap(CutomizeMapRecords.statisticalData)).done(function(data){
+						           progressCtr("hide");
+						        });
+						}
+					 else{
+							$.when(makeStatisticMap(ChartData)).done(function(data){
+						           progressCtr("hide");
+						        });
+					 }
+					
 					}
 					// if there is classificationIndex
 					if (CutomizeMapRecords.classificationIndex != "") {
@@ -1309,7 +1157,7 @@ function makeThematicMap() {
 						transforMakeStatisticMap();
 					}
 				
-				mapContainer.centerAndZoom({"x": 117.333103, "y": 39.294706, "spatialReference":mapContainer.spatialReference },0);
+				//mapContainer.centerAndZoom({"x": 89.81509762890624, "y": 37.38583148828124, "spatialReference":mapContainer.spatialReference },3);
 			}
 		});	
 	}
@@ -1860,7 +1708,7 @@ function makeClassPanel(){
 	if(editChart!=undefined)
 	editChart.startEdit();
 	
-	$(".steps-container").css("display","none");
+	//$(".steps-container").css("display","none");
 	$("#data-content").empty();	
 	
 	var html1 =$("#city-color").clone(true);
@@ -1904,7 +1752,7 @@ function makeClassPanel(){
 	+ '<button id="NextToStatistic" class="btn btn-primary" style="width:40%;margin-left:40px"'
 	+ '	onclick="makeStatisticPanel();">下一步</button>'
 	+ '<button id="saveMap"  class="btn btn-primary" style="display:none;width:80%;margin-left:20px;margin-top:25px"'
-	+ '	onclick="saveCustomizeMap();">保存</button>';
+	 '	onclick="saveCustomizeMap();">保存</button>';
 	$("#data-content").append(html4);
 	
 	// 切换分级数目
@@ -2069,6 +1917,7 @@ function getClassColor(){
 	
 	CutomizeMapRecords.lineWidth=$("#Thematic_Class_BorderHV")[0].value;
 	makeThematicMap();
+	buildPreviewInterface(2);
 }
 // RGB切换16位色彩
 function RGBToHex(rgb){ 
@@ -2146,8 +1995,8 @@ function makeStatisticPanel(){
 	+ '	onclick="reMakeStatisticMap();">确定</button>'
 	+ '<button class="btn btn-primary" style="width:40%;margin-left:40px"'
 	+ '	onclick="reMakeClasspanel();">上一步</button>'
-	+ '<button class="btn btn-primary" style="width:80%;margin-left:20px;margin-top:25px"'
-	+ '	onclick="saveCustomizeMap();">保存</button>';
+	+ '<button class="btn btn-primary" style="width:80%;margin-left:20px;margin-top:25px"';
+	//+ '	onclick="saveCustomizeMap();">保存</button>';
 	$("#data-content").append( elementOther);
 	// 初始化颜色对话框
 	$('.demo').each(function() {

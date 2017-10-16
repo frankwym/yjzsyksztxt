@@ -1,16 +1,17 @@
 //还原制图界面
 function rebuildMappingInterface(){
 	try{
+		mapContainer.showZoomSlider();
 		$("#map-print-title").remove();
 		$($(".map-print-top")[0]).remove();
 		$($(".map-print-bottom")[0]).remove();
 		$("#map-print-legend").remove();
-		$("#class_legend").remove();
-		$("#statistic_legend").remove();
+		/*$("#class_legend").remove();
+		$("#statistic_legend").remove();*/
 		$("#arrow").remove();
 		$("#map-print-chart").remove();
 		$("#map-print-text").remove();
-		$("#myMap").removeClass("map-print-Container");
+		$("#myMap").removeClass("map-print-Container-horizon");
 		$("#myMap").addClass("map-area");
 		$("#myMap").css("height","auto");
 	}catch(e){
@@ -20,19 +21,22 @@ function rebuildMappingInterface(){
 }
 //构建打印模板界面
 function buildInterfaceOfPrintMat() {
+	mapContainer.hideZoomSlider();
 	$("#myMap").removeClass("map-area");
-	$("#myMap").addClass("map-print-Container");
+	$("#myMap").addClass("map-print-Container-horizon");
 	$("#myMap").css("height","auto");
 	var mapInnerHtml='<div id="map-print-title" class="map-print-title"><span id="print-title" style="font-size:20px;margin-left:15px"></span></div>'+
 	'<div class="map-print-top"><img src="./images/bottomgb.PNG" style="width:100%;height:100%"/></div>'+
 	'<div class="map-print-bottom" ><img src="./images/titlebg.PNG" style="width:100%;height:100%"/></div>'+
 	'<div id="map-print-legend" class="map-print-legend">'+
-	'<img id="class_legend" src="">'+
-	'<img id="statistic_legend" src=""></div>'+
-	'<img id="arrow" class="arrow" src="./images/arrow.png"></img>'+
+	/*'<img id="class_legend" src="">'+
+	'<img id="statistic_legend" src="">'+*/
+	'</div><img id="arrow" class="arrow" src="./images/arrow.png"></img>'+
 	'<img id="map-print-chart" class="map-print-chart"></img>'+
 	'<div id="map-print-text" class="map-print-text"><span id="print-text" style="font-family:simsun;font-size:24px"></span></div></div>';
 	$("#myMap").append(mapInnerHtml);
+	 $("#map-print-legend").append($("#class_legend").clone());
+	 $("#map-print-legend").append($("#statistic_legend").clone());
 	$("#data-content").empty();
 	//$("#data-content").append("<div id='mapPanel1Scroll' class=\"scroll-content\" ></div>");
 	$("#data-content").append("<div id='mapPanel1' class=\"panel\" style=\"height:400px;\"></div>");
@@ -62,9 +66,7 @@ function buildInterfaceOfPrintMat() {
           ["images/printFormat/mxd4.png","模板4",
 				"http://server.arcgisonline.com/arcgis/rest/services/ESRI_Imagery_World_2D/MapServer" ],
 				["images/printFormat/mxd5.png","模板5",
-					"http://server.arcgisonline.com/arcgis/rest/services/ESRI_Imagery_World_2D/MapServer" ],
-					["images/printFormat/mxd6.png","模板6",
-						"http://server.arcgisonline.com/arcgis/rest/services/ESRI_Imagery_World_2D/MapServer" ]
+					"http://server.arcgisonline.com/arcgis/rest/services/ESRI_Imagery_World_2D/MapServer" ]
 
 	];
 	
@@ -105,6 +107,7 @@ function buildInterfaceOfPrintMat() {
 						switch (fomatName){
 						case "模板1":
 							PrintTemplateMxd="mxd1";
+							$("#myMap").attr("class","map-print-Container-horizon");
 							$("#map-print-legend").attr("class","map-print-legend");
 							$("#map-print-chart").attr("class","map-print-chart");
 							$("#map-print-text").attr("class","map-print-text");
@@ -112,6 +115,7 @@ function buildInterfaceOfPrintMat() {
 							break;
 						case "模板2":
 							PrintTemplateMxd="mxd2";
+							$("#myMap").attr("class","map-print-Container-horizon");
 							$("#map-print-legend").attr("class","map-print-legend2");
 							$("#map-print-chart").attr("class","map-print-chart2");
 							$("#map-print-text").attr("class","map-print-text2");
@@ -119,6 +123,7 @@ function buildInterfaceOfPrintMat() {
 							break;
 						case "模板3":
 							PrintTemplateMxd="mxd3";
+							$("#myMap").attr("class","map-print-Container-vertical");
 							$("#map-print-legend").attr("class","map-print-legend3");
 							$("#map-print-chart").attr("class","map-print-chart3");
 							$("#map-print-text").attr("class","map-print-text3");

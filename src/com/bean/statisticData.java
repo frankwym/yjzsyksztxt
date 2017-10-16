@@ -32,6 +32,9 @@ public class statisticData {
 		this.name = name;
 	}
 	public String getValue() {
+		if (value==null) {
+			value="null";
+		}
 		return value.trim();
 	}
 	public void setValue(String value) {

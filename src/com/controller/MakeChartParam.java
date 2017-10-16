@@ -129,7 +129,7 @@ public class MakeChartParam extends HttpServlet {
 				+ JSON.toJSONString(gradeDatas)+"&"+getGradeLegendString(gradeDatas,gradeColors)+"&"+this.classColors.trim()+"&"+this.classRegionGeo;
 		PrintWriter out = response.getWriter();
 		out.println(returnString);
-		System.out.println(returnString);
+		//System.out.println(returnString);
 		out.flush();
 		out.close();
 	}
@@ -142,7 +142,7 @@ public class MakeChartParam extends HttpServlet {
 		List<regionBean> classDatas = new ArrayList<>();
 		String geoStr="";
 		String xyStr="";
-		String sql = "select * from  region_distric  where name=?";
+		String sql = "select * from  whu_region_distric  where name=?";
 		for (int j = 0; j < regionNames.length; j++) {
 		try {
 				classDatas = qr.query(sql, new BeanListHandler<regionBean>(
@@ -186,7 +186,7 @@ public class MakeChartParam extends HttpServlet {
 		//String xyString="";
 		QueryRunner qr = new QueryRunner(JdbcUtils.getDataSource());
 		List<statisticData> statisticDatas = new ArrayList<>();
-		String sql = "select t.name,t.value,t.regionname,c.extent,c.x,c.y from whu_statisticdata t, region_distric c where t.name=? and t.disastertype=? and t.maptype=? and t.regionname=? and t.regionname=c.name";
+		String sql = "select t.name,t.value,t.regionname,c.extent,c.x,c.y from whu_statisticdata t, whu_region_distric c where t.name=? and t.disastertype=? and t.maptype=? and t.regionname=? and t.regionname=c.name";
 		try {
 			
 				for (int j = 0; j < regionNames.length; j++) {
@@ -318,7 +318,7 @@ public class MakeChartParam extends HttpServlet {
 		List<statisticData> classDatas = new ArrayList<>();
 		String dataString="";
 		//String xyStr="";
-		String sql = "select t.name,t.value,t.regionname,c.extent,c.x,c.y from whu_statisticdata t, region_distric c where t.name=? and t.disastertype=? and t.maptype=? and t.regionname=? and t.regionname=c.name";
+		String sql = "select t.name,t.value,t.regionname,c.extent,c.x,c.y from whu_statisticdata t, whu_region_distric c where t.name=? and t.disastertype=? and t.maptype=? and t.regionname=? and t.regionname=c.name";
 		for (int j = 0; j < regionNames.length; j++) {
 		try {
 				classDatas = qr.query(sql, new BeanListHandler<statisticData>(
@@ -380,7 +380,7 @@ public class MakeChartParam extends HttpServlet {
 		//假如是精加工，则有颜色值
 		
 		if(!"".equals(gradeColors)){
-			System.out.println(gradeColors);
+			//System.out.println(gradeColors);
 			int breakNum=gradeColors.split(",").length;
 			//分级
 			double[] breaks = ModelPrim.modelD2(

@@ -205,11 +205,13 @@
 .steps-container {
   padding: 5px;
   margin: 0 auto;
-  width: 1410px;
+  width: auto;
   line-height: 30px;
   text-align: center;
   color: #fff;
   overflow: hidden;
+  z-index:10;
+  position:relative;
 }
 
 .steps {
@@ -219,7 +221,7 @@
 .step-bar {
   position: relative;
   float: left;
-  width: 180px;
+  width: 150px;
   margin-left: 15px;
   color: #6d6d6d;
   background: #ececec;
@@ -237,7 +239,7 @@
 .step-inset::after {
   content: "";
   position: absolute;
-  left: 180px;
+  left: 150px;
   border: 15px solid transparent;
   border-left-color: #ececec;
 }
@@ -253,20 +255,20 @@
 
 .step-active {
   color: #fff;
-  background: #74c2f4;
+  background: #1d4169;
 }
 
 .step-active::after {
-  border-left-color: #74c2f4;
+  border-left-color:#1d4169;
 }
 
 .step-visited {
   color: #fff;
-  background: #9ad3f8;
+  background: #1d4169;
 }
 
 .step-visited::after {
-  border-left-color: #9ad3f8;
+  border-left-color: #1d4169;
 }
 
 .step-btn-group {
@@ -280,7 +282,7 @@
   width: 85px;
   margin-right: 6px;
   color: #fff;
-  background: linear-gradient(45deg,#74c2f4,#aadeff);
+  background: linear-gradient(45deg,#0c3e5f,#aadeff);
   border-radius: 15px;
   cursor: pointer;
   -webkit-transition: .2s ease-out;

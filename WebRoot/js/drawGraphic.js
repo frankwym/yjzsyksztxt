@@ -32,7 +32,7 @@ var htmltuya2='<div id="fillopa-borderwidth" style="box-sizing: border-box;paddi
 +'<input id="ex1" onchange="isUpdate()" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="100"/>'+'</div>'
 +'<div style="height:50%;width:100%;padding:0px;margin:0px;position:relative;float:left">'+'<h5 id="borderwid" style="font-weight:bold;margin-top:5px; margin-bottom:5px;">边界宽度:</h5>'
 +'<input id="ex2" onchange="isUpdate()" data-slider-id="ex2Slider" type="text" data-slider-min="0" data-slider-max="10" data-slider-step="1" data-slider-value="1"/>'+'</div>'
-+'<button class="btn btn-danger" style="heigth:30px;width:100%" onclick="drawing.clearDrawing()();">清楚所有标绘</button></div>';
++'<button class="btn btn-danger" style="heigth:30px;width:100%" onclick="drawing.clearDrawing()();">清除所有标绘</button></div>';
 
      /*添加图标*/
 /*$('.steps-container').css({"width":1200});
@@ -74,6 +74,7 @@ dojo.require("esri.map",
         "esri.layers.FeatureLayer",
 
         "esri.symbols.SimpleMarkerSymbol",
+        "esri.symbols.PictureMarkerSymbol",
         "esri.symbols.SimpleLineSymbol",
         "esri.symbols.SimpleFillSymbol",
 
@@ -138,6 +139,7 @@ function drawingTool(map,layer,div){
 		isDrawOnMapOnece:false,
 		isDrawing:false,
 		successFun:null,
+		pictureSymbol:null,
 		sy1:null,//显示样式
 		sy2:null,//
 		sy3:null,//
@@ -415,6 +417,12 @@ function drawingTool(map,layer,div){
 			var symbol;
 			switch (geometry.type) {
 				case "point":
+					if(this.isDrawOnMapOnece && this.isDrawOnMapOnece!=2){
+						symbol = new esri.symbol.PictureMarkerSymbol();
+					}else{
+						symbol =this.pictureSymbol;
+					}
+					break;
 				case "multipoint":
 					if(this.isDrawOnMapOnece && this.isDrawOnMapOnece!=2){
 						symbol = new esri.symbol.SimpleMarkerSymbol();
@@ -679,7 +687,14 @@ function drawingTool(map,layer,div){
                     rows:"auto",
                     columns:3
 					},"pointTemplateDiv");                  
-              		templatePickerPoint.startup();             		
+              		templatePickerPoint.startup();       
+              		dojo.connect(templatePickerPoint,"onSelectionChange",this,function() {
+              			if(templatePickerPoint.getSelected()){
+              				var selectedPoint=templatePickerPoint.getSelected();
+              				this.pictureSymbol=selectedPoint.item.symbol;
+              			}
+              			
+              		});
 			this.toolbar.activate(esri.toolbars.Draw.POINT);
 			this.drawGraphic();
 		},

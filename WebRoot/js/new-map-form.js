@@ -20,9 +20,9 @@ var currentMap = {};// 当前地图的属性
 			currentMap.mapName=mapName;
 			currentMap.mapDescribe=mapDescribe;
 			
-			CutomizeMapRecords.mapName=mapName;
-			CutomizeMapRecords.mapDescribe=mapDescribe;
+		
 			 $.ajax({
+				 	async: false,
 		            url: './SaveUserMap',
 		            type: 'POST',
 		            data: {
@@ -35,12 +35,15 @@ var currentMap = {};// 当前地图的属性
 		            		 alert(res);
 		            		 return;
 		            	}
+		            	CutomizeMapRecords.mapName=mapName;
+		    			CutomizeMapRecords.mapDescribe=mapDescribe;
 		            	$("#thisMapName").html(currentMap.mapName);
 		    			$("#newMapModal").modal("hide");
 		    			SAVE_INDEX++;
 		            },
 		            error: function (res) {
 		                alert("错误:"+res);	
+		                return;
 		            }
 		        });
 			

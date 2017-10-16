@@ -1,104 +1,67 @@
 [
   {
-    "text": "地形地势",
-    "nodes": []
-  },
-  {
-    "text": "植被景观及生态",
+    "text": "地震灾害",
     "nodes": [
       {
-        "text": "植被景观格局分析图",
-        "thumbnail": "images/thematicMap/zbjggjfxtThumbnail.jpg",
-        "val": "images/thematicMap/zbjggjfxt.jpg",
-        "describe": ""
-      },
-      {
-        "text": "植被面积统计图",
-        "thumbnail": "images/thematicMap/zbmjfgtThumbnail.jpg",
-        "val": "images/thematicMap/zbmjfgt.jpg",
-        "describe": ""
-      },
-      {
-        "text": "生态脆弱性评价图",
-        "thumbnail": "images/thematicMap/stcrxfxtThumbnail.jpg",
-        "val": "images/thematicMap/zbmjfgt.jpg",
+        "text": "九寨沟震区烈度图",
+        "thumbnail": "images/thematicMap/地震专题图96.jpg",
+        "val": "images/thematicMap/地震专题图300.jpg",
         "describe": ""
       }
     ]
   },
   {
-    "text": "荒漠与裸露地表",
+    "text": "地质灾害",
     "nodes": [
+      
       {
-        "text": "荒漠与裸露地表统计图",
-        "thumbnail": "images/thematicMap/hmylldbtjtThumbnail.jpg",
-        "val": "images/thematicMap/hmylldbtjt.jpg",
+        "text": "舟曲泥石流灾中救援应急专题图",
+        "thumbnail": "images/thematicMap/舟曲泥石流96.jpg",
+        "val": "images/thematicMap/舟曲泥石流300.jpg",
         "describe": ""
       }
     ]
   },
   {
-    "text": "水系",
+    "text": "洪水",
     "nodes": [
+      {
+        "text": "救援物资运输图",
+        "thumbnail": "images/thematicMap/物资运输96.jpg",
+        "val": "images/thematicMap/物资运输300.jpg",
+        "describe": ""
+      }
     ]
   },
   {
-    "text": "交通",
+    "text": "火灾",
     "nodes": [
     {
-        "text": "交通干线影响度分析图",
-        "thumbnail": "images/thematicMap/jtgxyxdfxtThumbnail.jpg",
-        "val": "images/thematicMap/jtgxyxdfxt.jpg",
+        "text": "兰州市主城区消防站点影响范围图",
+        "thumbnail": "images/thematicMap/火灾96.jpg",
+        "val": "images/thematicMap/火灾300.jpg",
         "describe": ""
       }
     ]
   },
   {
-    "text": "用地及公共服务设施",
+    "text": "道路交通事故",
     "nodes": [
-    {
-        "text": "老龄化及养老设施可获性分析图",
-        "thumbnail": "images/thematicMap/llhjylsskhxfxtThumbnail.jpg",
-        "val": "images/thematicMap/llhjylsskhxfxt.jpg",
-        "describe": ""
-      },
       {
-        "text": "基础教育资源可达性及公平性分析图",
-        "thumbnail": "images/thematicMap/jcjyzykdxjgpxfxtThumbnail.jpg",
-        "val": "images/thematicMap/jcjyzykdxjgpxfxt.jpg",
+        "text": "甘肃省南部干线结冰预警",
+        "thumbnail": "images/thematicMap/甘肃专题96.jpg",
+        "val": "images/thematicMap/甘肃专题300.jpg",
         "describe": ""
-      },
+      }
+    ]
+  },
+  {
+    "text": "建筑物倒塌",
+    "nodes": [
       {
-        "text": "中心城区基础设施差异分析图",
-        "thumbnail": "images/thematicMap/zxcqjcsscyfxtThumbnail.jpg",
-        "val": "images/thematicMap/zxcqjcsscyfxt.jpg",
-        "describe": ""
-      }
-    ]
-  },
-  {
-    "text": "人口",
-    "nodes": [
-    ]
-  },
-  {
-    "text": "经济",
-    "nodes": [
-     {
-        "text": "区域开发强度分析图",
-        "thumbnail": "images/thematicMap/qykfqdfxtThumbnail.jpg",
-        "val": "images/thematicMap/qykfqdfxt.jpg",
-        "describe": ""
-      }
-    ]
-  },
-  {
-    "text": "灾害",
-    "nodes": [
-    {
-        "text": "北部山区崩塌和滑坡灾害风险分析图",
-        "thumbnail": "images/thematicMap/bbsqbthhpzhfxfxtThumbnail.jpg",
-        "val": "images/thematicMap/bbsqbthhpzhfxfxt.jpg",
+        "text": "四川省综合自然灾害房屋倒塌分布图",
+        "thumbnail": "images/thematicMap/房屋倒塌96.jpg",
+        "val": "images/thematicMap/房屋倒塌300.jpg",
         "describe": ""
       }
     ]
