@@ -10,21 +10,22 @@ dojo.require("esri.tasks.AreasAndLengthsParameters");
 
 var drawing;
 var measure;
+var isDrawPoint=false;
 
 var div=$('#tuyapane');
 var htmltuya='<div id="tuyapane" style="box-sizing: border-box;padding: 10px;border: 2px solid #448aca;border-radius: 6px;width:250px;height:646px;visibility:hidden;position:absolute;right:2%;top:10%;z-index:999;background:white;"></div>';      
 $(".main-section").append(htmltuya);
 $('#tuyapane').draggable();
 
-var htmlElse ='<div style="height:100%;width:50%;overflow: auto;padding:0px;margin:0px;position:relative;float:left">'
+var htmlElse ='<div style="height:80px;width:100%;overflow: auto;padding:0px;margin:0px;position:relative;float:left">'
 	+'<h5 id="ant-col-label-1" style="font-weight:bold;margin-top:10px;margin-bottom:5px;">填充颜色:</h5>'
 	+'<input type="color" id="ant-col-input-1" Value="#448aca" onchange="isUpdate()" style="border-radius: 4px;display:inline-block;cursor:text;padding: 0px; border: none; width:96%;background-color: rgb(192, 192, 192);">'+'</div>'
-	+'<div style="height:100%;width:50%;padding:0px;margin:0px;position:relative;float:left">'
+	+'<div style="height:80px;width:100%;padding:0px;margin:0px;position:relative;float:left">'
 	+'<h5 id="ant-col-label-2" style="font-weight:bold;margin-top:10px; margin-bottom:5px;">边界颜色:</h5>'
 	+'<input type="color" id="ant-col-input-2" Value="#cccccc" onchange="isUpdate()" style="border-radius: 4px;display:inline-block;cursor:text;padding: 0px; border: none; width:96%;background-color: rgb(192, 192, 192);">'
 	+'</div>';
 //var htmlPoint =;
-var htmltuya1='<div id="ant-col" style="box-sizing: border-box;padding: 3px;border-radius: 6px;width:228px;box-sizing: border-box;margin-top: 7px;margin-bottom: 0px;height: 168px;overflow:auto">'
+var htmltuya1='<div id="ant-col" style="box-sizing: border-box;padding: 3px;border-radius: 6px;width:230px;box-sizing: border-box;margin-top: 7px;margin-bottom: 0px;height: 168px;overflow:auto">'
 +htmlElse+'</div>';
 var htmltuya2='<div id="fillopa-borderwidth" style="box-sizing: border-box;padding: 3px;border-radius: 6px;width:228px;box-sizing: border-box;margin-top: 10px;margin-bottom: 10px;height: 133px">'
 	+'<div style="height:50%;width:100%;padding:0px;margin:0px;position:relative;float:left">'
@@ -32,7 +33,7 @@ var htmltuya2='<div id="fillopa-borderwidth" style="box-sizing: border-box;paddi
 +'<input id="ex1" onchange="isUpdate()" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="100"/>'+'</div>'
 +'<div style="height:50%;width:100%;padding:0px;margin:0px;position:relative;float:left">'+'<h5 id="borderwid" style="font-weight:bold;margin-top:5px; margin-bottom:5px;">边界宽度:</h5>'
 +'<input id="ex2" onchange="isUpdate()" data-slider-id="ex2Slider" type="text" data-slider-min="0" data-slider-max="10" data-slider-step="1" data-slider-value="1"/>'+'</div>'
-+'<button class="btn btn-danger" style="heigth:30px;width:100%" onclick="drawing.clearDrawing()();">清除所有标绘</button></div>';
++'<button class="btn btn-danger" style="heigth:30px;width:100%" onclick="drawing.clearDrawing()();">清楚所有标绘</button></div>';
 
      /*添加图标*/
 /*$('.steps-container').css({"width":1200});
@@ -74,7 +75,6 @@ dojo.require("esri.map",
         "esri.layers.FeatureLayer",
 
         "esri.symbols.SimpleMarkerSymbol",
-        "esri.symbols.PictureMarkerSymbol",
         "esri.symbols.SimpleLineSymbol",
         "esri.symbols.SimpleFillSymbol",
 
@@ -139,7 +139,9 @@ function drawingTool(map,layer,div){
 		isDrawOnMapOnece:false,
 		isDrawing:false,
 		successFun:null,
-		pictureSymbol:null,
+		pointDrawNum:null,
+		templatePickerPoint:null,
+
 		sy1:null,//显示样式
 		sy2:null,//
 		sy3:null,//
@@ -170,9 +172,9 @@ function drawingTool(map,layer,div){
 			if(fillopacity)this.fillopacity=fillopacity*255/100;
 			if(bordercolor)this.bordercolor=bordercolor;
 			if(borderwidth)this.borderwidth=borderwidth;
-			//this.sy1 = new esri.symbol.SimpleMarkerSymbol({"color": this.color16tocolor10(this.fillcolor,this.fillopacity),"size":5,
-			//	"outline": {"color": this.color16tocolor10(this.bordercolor,this.fillopacity),"width": this.borderwidth}});
-			this.sy1 = new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"http://static.arcgis.com/images/Symbols/Basic/esriCartographyMarker_81_Blue.png","imageData":"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","contentType":"image/png","width":24,"height":24});
+			this.sy1 = new esri.symbol.SimpleMarkerSymbol({"color": this.color16tocolor10(this.fillcolor,this.fillopacity),"size":5,
+				"outline": {"color": this.color16tocolor10(this.bordercolor,this.fillopacity),"width": this.borderwidth}});
+			//this.sy1 = new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"http://static.arcgis.com/images/Symbols/Basic/esriCartographyMarker_81_Blue.png","imageData":"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","contentType":"image/png","width":24,"height":24});
 			this.sy2 = new esri.symbol.SimpleLineSymbol({"color": this.color16tocolor10(this.bordercolor,this.fillopacity),"width": this.borderwidth});
 			this.sy3 = new esri.symbol.SimpleMarkerSymbol({"color": this.color16tocolor10(this.fillcolor,0),
 				"outline": {"color": this.color16tocolor10(this.bordercolor,this.fillopacity),"width": this.borderwidth}});
@@ -320,22 +322,22 @@ function drawingTool(map,layer,div){
 		                //case "1":this.drawingPoint();break;
 		                //case "1":alert("I am an alert box!!");
 		                case "1":this.drawingPoint();break;
-		        		case "2":this.drawingMulti_Point();break;
-		        		case "3":this.drawingLine();break;
-		        		case "4":this.drawingPolyline();break;
-		        		case "5":this.drawingPolygon();break;
-		        		case "6":this.drawingFreehand_Polyline();break;
-		        		case "7":this.drawingFreehand_Polygon();break;
-		        		case "8":this.drawingArrow();break;
-		        		case "9":this.drawingTriangle();break;
-		        		case "10":this.drawingCircle();break;
-		        		case "11":this.drawingEllipse();break;
-		        		case "12":this.isDrawText=true;break;
-		        		case "13":this.drawingRectangle();break;
-		        		case "14":this.drawingBezierPolygon();break;
-		        		case "15":this.drawingCurve();break;
-		        		case "16":this.drawingBezierCurve();break;
-		        		case "17":this.drawingTailedsquadcombat();break;
+		        		case "2":this.drawingMulti_Point();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "3":this.drawingLine();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "4":this.drawingPolyline();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "5":this.drawingPolygon();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "6":this.drawingFreehand_Polyline();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "7":this.drawingFreehand_Polygon();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "8":this.drawingArrow();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "9":this.drawingTriangle();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "10":this.drawingCircle();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "11":this.drawingEllipse();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "12":this.isDrawText=true;$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "13":this.drawingRectangle();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "14":this.drawingBezierPolygon();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "15":this.drawingCurve();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "16":this.drawingBezierCurve();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
+		        		case "17":this.drawingTailedsquadcombat();$("#ant-col").css("border","0px solid rgb(68, 138, 202)");break;
 		        		default:break;
 		              }
 	                }
@@ -346,6 +348,13 @@ function drawingTool(map,layer,div){
 		/** 添加文字 */
 		drawingText:function(evt){
 			if(this.isDrawText){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
 				if(this.drawTextFun==null){
 					var symbol = new esri.symbol.TextSymbol({"color": this.color16tocolor10(this.fillcolor,this.fillopacity)}).setFont(new esri.symbol.Font("20pt").setFamily("SimSun"));
 					symbol.setText(this.drawText);
@@ -417,12 +426,6 @@ function drawingTool(map,layer,div){
 			var symbol;
 			switch (geometry.type) {
 				case "point":
-					if(this.isDrawOnMapOnece && this.isDrawOnMapOnece!=2){
-						symbol = new esri.symbol.PictureMarkerSymbol();
-					}else{
-						symbol =this.pictureSymbol;
-					}
-					break;
 				case "multipoint":
 					if(this.isDrawOnMapOnece && this.isDrawOnMapOnece!=2){
 						symbol = new esri.symbol.SimpleMarkerSymbol();
@@ -620,98 +623,163 @@ function drawingTool(map,layer,div){
 			this.drawGraphic();
 		},*/
 		drawingPoint:function(drawOnece,fun){
-						
+			isDrawPoint=true;			
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			$('#ant-col').empty();
-//			if($("#ant-col").children().attr('id')=="pointTemplateDiv"){
-//				templatePickerPoint.destroy();
-//			}
+			$("#ant-col").css("border","1px solid rgb(68, 138, 202)");
 			try{
 				templatePickerPoint.destroy();
 			}
 			catch(e){}
 			var nowDiv=document.getElementById("ant-col");
-//			if($("#ant-col").children().attr('id')!="pointTemplateDiv"){}
 			var pointDiv = document.createElement('div');
    		    pointDiv.setAttribute("id", "pointTemplateDiv");
    		    document.getElementById("ant-col").appendChild(pointDiv);
 			templatePickerPoint = new esri.dijit.editing.TemplatePicker({
                 items:[
-                    { label: "安全建筑", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/anquanjianzhu.png","contentType":"image/png","width":24,"height":24}),name:"点", description: "描述..." ,cartNum:"1"},
-//                  { label: "多点", symbol: new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_DIAMOND),name:"点", description: "description 2" ,cartNum:"2"},
-                    { label: "不安全建筑", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/buanquanjianzhu.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "倒塌", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/daota.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "黄闪灯", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/huangshandeng.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "化学火灾", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/huaxuehuozai.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "滑坡", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/huapo.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "火源", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/huoyuan.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "交通事故", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jiaotongshigu.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "警示", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jingshi.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "禁区", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jinqu.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "紧急救护站", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jinjijiuhuzhan.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "救护车", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jiuhuche.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "救护中心", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jiuhuzhongxin.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "救援队", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jiuyuandui.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "口门", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/koumen.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "路灯", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/ludeng.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "灭火器", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/miehuoqi.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "灭火栓", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/miehuoshuan.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "泥石流", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/nishiliu.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "人行横道", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/renxinghengdao.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "物资供应处", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/wuzigongyingchu.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "消防车", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/xiaofangche.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "消防栓", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/xiaofangshuan.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "消防通道", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/xiaofangtongdao.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "消防云梯", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/xiaofangyunti.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "沿途危险点", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yantuweixiandian.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"3"},
-                    { label: "次生灾害源", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/cishengzaihaiyuan.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"4"},
-                    { label: "宏观震中", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/hongguanzhenzhong.png","contentType":"image/png","width":24,"height":24}),name:"面", description: "描述..." ,cartNum:"5"},
-                    { label: "物资供应处", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/wuzigongyingchu.png","contentType":"image/png","width":24,"height":24}),name:"线", description: "描述..." ,cartNum:"6"},
-                    { label: "医疗救护站", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yiliaojiuhuzhan.png","contentType":"image/png","width":24,"height":24}), name:"面",description: "描述..." ,cartNum:"7"},
-                    { label: "应急避难所", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yingjibinansuo.png","contentType":"image/png","width":24,"height":24}),name:"箭头", description: "描述..." ,cartNum:"8"},
-                    { label: "应急避出口", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yingjichukou.png","contentType":"image/png","width":24,"height":24}),name:"箭头", description: "描述..." ,cartNum:"8"},
-                    { label: "应急棚", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yingjipeng.png","contentType":"image/png","width":24,"height":24}), name:"三角形",description: "描述..." ,cartNum:"9"},
-                    { label: "应急停车场", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yingjitingchechang.png","contentType":"image/png","width":24,"height":24}),name:"圆形", description: "描述..." ,cartNum:"10"},
-                    { label: "应急停机坪", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yingjitingjiping.png","contentType":"image/png","width":24,"height":24}),name:"椭圆", description: "描述..." ,cartNum:"11"},
-                    { label: "应急指挥", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yingjizhihui.png","contentType":"image/png","width":24,"height":24}),name:"显示文字", description: "描述..." ,cartNum:"12"},
-                    { label: "原地安置点", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yuandianzhidian.png","contentType":"image/png","width":24,"height":24}),name:"矩形", description: "描述..." ,cartNum:"13"},
-                    { label: "闸", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/zha.png","contentType":"image/png","width":24,"height":24}),name:"集结地", description: "描述..." ,cartNum:"14"},
-                    { label: "指路标志", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/zhilubiaozhi.png","contentType":"image/png","width":24,"height":24}),name:"弧线", description: "描述..." ,cartNum:"15"},
-                    { label: "指示标识", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/zhishibiaoshi.png","contentType":"image/png","width":24,"height":24}),name:"曲线", description: "描述..." ,cartNum:"16"},
-                    { label: "指示灯", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/zhishideng.png","contentType":"image/png","width":24,"height":24}),name:"燕尾箭头", description: "描述..." ,cartNum:"17"},
-                    { label: "转移安置点", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/zhuanyianzhidian.png","contentType":"image/png","width":24,"height":24}),name:"燕尾箭头", description: "描述..." ,cartNum:"17"},
-                    { label: "转移单元", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/zhuanyidanyuan.png","contentType":"image/png","width":24,"height":24}),name:"燕尾箭头", description: "描述..." ,cartNum:"17"}
+                   //new esri.symbol.SimpleMarkerSymbol({"color": this.color16tocolor10(this.fillcolor,this.fillopacity),"size":5,
+    				//"outline": {"color": this.color16tocolor10(this.bordercolor,this.fillopacity),"width": this.borderwidth}}); { label: "安全建筑", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/anquanjianzhu.png","contentType":"image/png","width":24,"height":24}),name:"安全建筑", description: "描述..." ,cartNum:"1"},
+                	{ label: "多点", symbol: new esri.symbol.SimpleMarkerSymbol({"color": this.color16tocolor10(this.fillcolor,this.fillopacity),"size":5,"outline": {"color": this.color16tocolor10(this.bordercolor,this.fillopacity),"width": this.borderwidth}}),name:"多点", description: "描述..." ,cartNum:"44"},
+                	{ label: "安全建筑", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/anquanjianzhu.png","contentType":"image/png","width":24,"height":24}),name:"安全建筑", description: "描述..." ,cartNum:"1"},
+                	{ label: "不安全建筑", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/buanquanjianzhu.png","contentType":"image/png","width":24,"height":24}),name:"不安全建筑", description: "描述..." ,cartNum:"2"},
+                    { label: "倒塌", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/daota.png","contentType":"image/png","width":24,"height":24}),name:"倒塌", description: "描述..." ,cartNum:"3"},
+                    { label: "黄闪灯", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/huangshandeng.png","contentType":"image/png","width":24,"height":24}),name:"黄闪灯", description: "描述..." ,cartNum:"4"},
+                    { label: "化学火灾", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/huaxuehuozai.png","contentType":"image/png","width":24,"height":24}),name:"化学火灾", description: "描述..." ,cartNum:"5"},
+                    { label: "滑坡", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/huapo.png","contentType":"image/png","width":24,"height":24}),name:"滑坡", description: "描述..." ,cartNum:"6"},
+                    { label: "火源", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/huoyuan.png","contentType":"image/png","width":24,"height":24}),name:"火源", description: "描述..." ,cartNum:"7"},
+                    { label: "交通事故", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jiaotongshigu.png","contentType":"image/png","width":24,"height":24}),name:"交通事故", description: "描述..." ,cartNum:"8"},
+                    { label: "警示", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jingshi.png","contentType":"image/png","width":24,"height":24}),name:"警示", description: "描述..." ,cartNum:"9"},
+                    { label: "禁区", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jinqu.png","contentType":"image/png","width":24,"height":24}),name:"禁区", description: "描述..." ,cartNum:"10"},
+                    { label: "紧急救护站", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jinjijiuhuzhan.png","contentType":"image/png","width":24,"height":24}),name:"紧急救护站", description: "描述..." ,cartNum:"11"},
+                    { label: "救护车", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jiuhuche.png","contentType":"image/png","width":24,"height":24}),name:"救护车", description: "描述..." ,cartNum:"12"},
+                    { label: "救护中心", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jiuhuzhongxin.png","contentType":"image/png","width":24,"height":24}),name:"救护中心", description: "描述..." ,cartNum:"13"},
+                    { label: "救援队", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/jiuyuandui.png","contentType":"image/png","width":24,"height":24}),name:"救援队", description: "描述..." ,cartNum:"14"},
+                    { label: "口门", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/koumen.png","contentType":"image/png","width":24,"height":24}),name:"口门", description: "描述..." ,cartNum:"15"},
+                    { label: "路灯", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/ludeng.png","contentType":"image/png","width":24,"height":24}),name:"路灯", description: "描述..." ,cartNum:"16"},
+                    { label: "灭火器", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/miehuoqi.png","contentType":"image/png","width":24,"height":24}),name:"灭火器", description: "描述..." ,cartNum:"17"},
+                    { label: "灭火栓", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/miehuoshuan.png","contentType":"image/png","width":24,"height":24}),name:"灭火栓", description: "描述..." ,cartNum:"18"},
+                    { label: "泥石流", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/nishiliu.png","contentType":"image/png","width":24,"height":24}),name:"泥石流", description: "描述..." ,cartNum:"19"},
+                    { label: "人行横道", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/renxinghengdao.png","contentType":"image/png","width":24,"height":24}),name:"人行横道", description: "描述..." ,cartNum:"20"},
+                    { label: "物资供应处", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/wuzigongyingchu.png","contentType":"image/png","width":24,"height":24}),name:"物资供应处", description: "描述..." ,cartNum:"21"},
+                    { label: "消防车", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/xiaofangche.png","contentType":"image/png","width":24,"height":24}),name:"消防车", description: "描述..." ,cartNum:"22"},
+                    { label: "消防栓", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/xiaofangshuan.png","contentType":"image/png","width":24,"height":24}),name:"消防栓", description: "描述..." ,cartNum:"23"},
+                    { label: "消防通道", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/xiaofangtongdao.png","contentType":"image/png","width":24,"height":24}),name:"消防通道", description: "描述..." ,cartNum:"24"},
+                    { label: "消防云梯", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/xiaofangyunti.png","contentType":"image/png","width":24,"height":24}),name:"消防云梯", description: "描述..." ,cartNum:"25"},
+                    { label: "沿途危险点", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yantuweixiandian.png","contentType":"image/png","width":24,"height":24}),name:"沿途危险点", description: "描述..." ,cartNum:"26"},
+                    { label: "次生灾害源", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/cishengzaihaiyuan.png","contentType":"image/png","width":24,"height":24}),name:"次生灾害源", description: "描述..." ,cartNum:"27"},
+                    { label: "宏观震中", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/hongguanzhenzhong.png","contentType":"image/png","width":24,"height":24}),name:"宏观震中", description: "描述..." ,cartNum:"28"},
+                    { label: "物资供应处", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/wuzigongyingchu.png","contentType":"image/png","width":24,"height":24}),name:"物资供应处", description: "描述..." ,cartNum:"29"},
+                    { label: "医疗救护站", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yiliaojiuhuzhan.png","contentType":"image/png","width":24,"height":24}), name:"医疗救护站",description: "描述..." ,cartNum:"30"},
+                    { label: "应急避难所", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yingjibinansuo.png","contentType":"image/png","width":24,"height":24}),name:"应急避难所", description: "描述..." ,cartNum:"31"},
+                    { label: "应急出口", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yingjichukou.png","contentType":"image/png","width":24,"height":24}),name:"应急出口", description: "描述..." ,cartNum:"32"},
+                    { label: "应急棚", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yingjipeng.png","contentType":"image/png","width":24,"height":24}), name:"应急棚",description: "描述..." ,cartNum:"33"},
+                    { label: "应急停车场", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yingjitingchechang.png","contentType":"image/png","width":24,"height":24}),name:"应急停车场", description: "描述..." ,cartNum:"34"},
+                    { label: "应急停机坪", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yingjitingjiping.png","contentType":"image/png","width":24,"height":24}),name:"应急停机坪", description: "描述..." ,cartNum:"35"},
+                    { label: "应急指挥", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yingjizhihui.png","contentType":"image/png","width":24,"height":24}),name:"应急指挥", description: "描述..." ,cartNum:"36"},
+                    { label: "原地安置点", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/yuandianzhidian.png","contentType":"image/png","width":24,"height":24}),name:"原地安置点", description: "描述..." ,cartNum:"37"},
+                    { label: "闸", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/zha.png","contentType":"image/png","width":24,"height":24}),name:"闸", description: "描述..." ,cartNum:"38"},
+                    { label: "指路标志", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/zhilubiaozhi.png","contentType":"image/png","width":24,"height":24}),name:"指路标志", description: "描述..." ,cartNum:"39"},
+                    { label: "指示标识", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/zhishibiaoshi.png","contentType":"image/png","width":24,"height":24}),name:"指路标识", description: "描述..." ,cartNum:"40"},
+                    { label: "指示灯", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/zhishideng.png","contentType":"image/png","width":24,"height":24}),name:"指示灯", description: "描述..." ,cartNum:"41"},
+                    { label: "转移安置点", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/zhuanyianzhidian.png","contentType":"image/png","width":24,"height":24}),name:"转移安置点", description: "描述..." ,cartNum:"42"},
+                    { label: "转移单元", symbol: new esri.symbol.PictureMarkerSymbol({"angle":0,"xoffset":0,"yoffset":0,"type":"esriPMS","url":"./images/disasterIMG/zhuanyidanyuan.png","contentType":"image/png","width":24,"height":24}),name:"转移单元", description: "描述..." ,cartNum:"43"}
                     ],
                     grouping: true,
                     rows:"auto",
+                    showTooltip: true,
+                    style:"border: 0px;",
                     columns:3
 					},"pointTemplateDiv");                  
-              		templatePickerPoint.startup();       
+              		templatePickerPoint.startup();
               		dojo.connect(templatePickerPoint,"onSelectionChange",this,function() {
-              			if(templatePickerPoint.getSelected()){
-              				var selectedPoint=templatePickerPoint.getSelected();
-              				this.pictureSymbol=selectedPoint.item.symbol;
-              			}
-              			
-              		});
-			this.toolbar.activate(esri.toolbars.Draw.POINT);
-			this.drawGraphic();
+    	    	    	
+    	    	    	var selectedTemplate;
+           			this.toolbar.deactivate();
+           			this.exToolbar.deactivate();
+           			this.exToolbar1.deactivate();
+    	                if( templatePickerPoint.getSelected() ) {
+    	                  selectedTemplate = templatePickerPoint.getSelected();
+    	                  switch (selectedTemplate.item.cartNum) {
+    		                case "1":this.drawingPictureSymbol("./images/disasterIMG/anquanjianzhu.png",1);pointDrawNum=1;break;
+    		                case "2":this.drawingPictureSymbol("./images/disasterIMG/buanquanjianzhu.png",2);pointDrawNum=2;break;   		        
+    		        		case "3":this.drawingPictureSymbol("./images/disasterIMG/daota.png",3);pointDrawNum=3;break;
+    		        		case "4":this.drawingPictureSymbol("./images/disasterIMG/huangshandeng.png",4);pointDrawNum=4;break;
+    		        		case "5":this.drawingPictureSymbol("./images/disasterIMG/huaxuehuozai.png",5);pointDrawNum=5;break;
+    		        		case "6":this.drawingPictureSymbol("./images/disasterIMG/huapo.png",6);pointDrawNum=6;break;
+    		        		case "7":this.drawingPictureSymbol("./images/disasterIMG/huoyuan.png",7);pointDrawNum=7;break;
+    		        		case "8":this.drawingPictureSymbol("./images/disasterIMG/jiaotongshigu.png",8);pointDrawNum=8;break;
+    		        		case "9":this.drawingPictureSymbol("./images/disasterIMG/jingshi.png",9);pointDrawNum=9;break;
+    		        		case "10":this.drawingPictureSymbol("./images/disasterIMG/jinqu.png",10);pointDrawNum=10;break;
+    		        		case "11":this.drawingPictureSymbol("./images/disasterIMG/jinjijiuhuzhan.png",11);pointDrawNum=11;break;
+    		        		case "12":this.drawingPictureSymbol("./images/disasterIMG/jiuhuche.png",12);pointDrawNum=12;break;
+    		        		case "13":this.drawingPictureSymbol("./images/disasterIMG/jiuhuzhongxin.png",13);pointDrawNum=13;break;
+    		        		case "14":this.drawingPictureSymbol("./images/disasterIMG/jiuyuandui.png",14);pointDrawNum=14;break;
+    		        		case "15":this.drawingPictureSymbol("./images/disasterIMG/koumen.png",15);pointDrawNum=15;break;
+    		        		case "16":this.drawingPictureSymbol("./images/disasterIMG/ludeng.png",16);pointDrawNum=16;break;
+    		        		case "17":this.drawingPictureSymbol("./images/disasterIMG/miehuoqi.png",17);pointDrawNum=17;break;
+    		        		case "18":this.drawingPictureSymbol("./images/disasterIMG/miehuoshuan.png",18);pointDrawNum=18;break;
+    		        		case "19":this.drawingPictureSymbol("./images/disasterIMG/nishiliu.png",19);pointDrawNum=19;break;
+    		        		case "20":this.drawingPictureSymbol("./images/disasterIMG/renxinghengdao.png",20);pointDrawNum=20;break;
+    		        		case "21":this.drawingPictureSymbol("./images/disasterIMG/wuzigongyingchu.png",21);pointDrawNum=21;break;
+    		        		case "22":this.drawingPictureSymbol("./images/disasterIMG/xiaofangche.png",22);pointDrawNum=22;break;
+    		        		case "23":this.drawingPictureSymbol("./images/disasterIMG/xiaofangshuan.png",23);pointDrawNum=23;break;
+    		        		case "24":this.drawingPictureSymbol("./images/disasterIMG/xiaofangtongdao.png",24);pointDrawNum=24;break;
+    		        		case "25":this.drawingPictureSymbol("./images/disasterIMG/xiaofangyunti.png",25);pointDrawNum=25;break;
+    		        		case "26":this.drawingPictureSymbol("./images/disasterIMG/yantuweixiandian.png",26);pointDrawNum=26;break;
+    		        		case "27":this.drawingPictureSymbol("./images/disasterIMG/cishengzaihaiyuan.png",27);pointDrawNum=27;break;
+    		        		case "28":this.drawingPictureSymbol("./images/disasterIMG/hongguanzhenzhong.png",28);pointDrawNum=28;break;
+    		        		case "29":this.drawingPictureSymbol("./images/disasterIMG/wuzigongyingchu.png",29);pointDrawNum=29;break;
+    		        		case "30":this.drawingPictureSymbol("./images/disasterIMG/yiliaojiuhuzhan.png",30);pointDrawNum=30;break;
+    		        		case "31":this.drawingPictureSymbol("./images/disasterIMG/yingjibinansuo.png",31);pointDrawNum=31;break;
+    		        		case "32":this.drawingPictureSymbol("./images/disasterIMG/yingjichukou.png",32);pointDrawNum=32;break;
+    		        		case "33":this.drawingPictureSymbol("./images/disasterIMG/yingjipeng.png",33);pointDrawNum=33;break;
+    		        		case "34":this.drawingPictureSymbol("./images/disasterIMG/yingjitingchechang.png",34);pointDrawNum=34;break;
+    		        		case "35":this.drawingPictureSymbol("./images/disasterIMG/yingjitingjiping.png",35);pointDrawNum=35;break;
+    		        		case "36":this.drawingPictureSymbol("./images/disasterIMG/yingjizhihui.png",36);pointDrawNum=36;break;
+    		        		case "37":this.drawingPictureSymbol("./images/disasterIMG/yuandianzhidian.png",37);pointDrawNum=37;break;
+    		        		case "38":this.drawingPictureSymbol("./images/disasterIMG/zha.png",38);pointDrawNum=38;break;
+    		        		case "39":this.drawingPictureSymbol("./images/disasterIMG/zhilubiaozhi.png",39);pointDrawNum=39;break;
+    		        		case "40":this.drawingPictureSymbol("./images/disasterIMG/zhishibiaoshi.png",40);pointDrawNum=40;break;
+    		        		case "41":this.drawingPictureSymbol("./images/disasterIMG/zhishideng.png",41);pointDrawNum=41;break;
+    		        		case "42":this.drawingPictureSymbol("./images/disasterIMG/zhuanyianzhidian.png",42);pointDrawNum=42;break;
+    		        		case "43":this.drawingPictureSymbol("./images/disasterIMG/zhuanyidanyuan.png",43);pointDrawNum=43;break; 
+    		        		case "44":this.drawingMulti_Point();pointDrawNum=44;break;
+    		        		default:pointDrawNum=0;break;
+    		              }
+    	                }
+    	                
+    	            });
+			//this.toolbar.activate(esri.toolbars.Draw.POINT);
+			//this.drawGraphic();
 		},
+		drawingPictureSymbol:function(url,num){
+			//this.isDrawOnMapOnece = drawOnece;
+			//this.successFun = fun;
+			var pt;			
+			map.on("click",function(e){
+				if(templatePickerPoint.getSelected()&&pointDrawNum==num){
+					
+				pt=e.mapPoint;
+				symbolStart=new esri.symbol.PictureMarkerSymbol(url, 32, 32);
+				var graphic = new esri.Graphic(pt, symbolStart);
+				drawLayer.add(graphic);
+			}
+			});
+			
+			//this.toolbar.activate(esri.toolbars.Draw.MULTI_POINT);
+			//this.drawGraphic();
+			
+		},
+		
 		drawingMulti_Point:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.toolbar.activate(esri.toolbars.Draw.MULTI_POINT);
 			this.drawGraphic();
 		},
 		drawingLine:function(drawOnece,fun){
+			if(isDrawPoint){
 			$('#ant-col').empty();
 			try{
 							templatePickerPoint.destroy();
@@ -719,194 +787,250 @@ function drawingTool(map,layer,div){
 						catch(e){}
 						var nowDiv=document.getElementById("ant-col");
 			$('#ant-col').append(htmlElse);
+			isDrawPoint=false;
+			}
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.toolbar.activate(esri.toolbars.Draw.LINE);
-			this.drawGraphic();
+			this.drawGraphic();			
 		},
 		drawingPolyline:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.toolbar.activate(esri.toolbars.Draw.POLYLINE);
 			this.drawGraphic();
 		},
 		drawingPolygon:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.toolbar.activate(esri.toolbars.Draw.POLYGON);
 			this.drawGraphic();
 		},
 		drawingFreehand_Polyline:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.toolbar.activate(esri.toolbars.Draw.FREEHAND_POLYLINE);
 			this.drawGraphic();
 		},
 		drawingFreehand_Polygon:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
+
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.toolbar.activate(esri.toolbars.Draw.FREEHAND_POLYGON);
 			this.drawGraphic();
 		},
 		drawingArrow:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
+
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.toolbar.activate(esri.toolbars.Draw.ARROW);
 			this.drawGraphic();
 		},
 		drawingTriangle:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
+
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.toolbar.activate(esri.toolbars.Draw.TRIANGLE);
 			this.drawGraphic();
 		},
 		drawingCircle:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
+
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.toolbar.activate(esri.toolbars.Draw.CIRCLE);
 			this.drawGraphic();
 		},
 		drawingEllipse:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
+
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.toolbar.activate(esri.toolbars.Draw.ELLIPSE);
 			this.drawGraphic();
 		},
 		drawingRectangle:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
+
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.toolbar.activate(esri.toolbars.Draw.RECTANGLE);
 			this.drawGraphic();
 		},
 		drawingExtent:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
+
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.toolbar.activate(esri.toolbars.Draw.EXTENT);
 			this.drawGraphic();
 		},
 		drawingBezierPolygon:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
+
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.exToolbar.activate(Extension.DrawEx.BEZIER_POLYGON);
 			this.drawGraphic();
 		},
 		drawingCurve:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
+
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.exToolbar.activate(Extension.DrawEx.CURVE);
 			this.drawGraphic();
 		},
 		drawingBezierCurve:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
+
 			this.isDrawOnMapOnece = drawOnece;
 			this.successFun = fun;
 			this.exToolbar.activate(Extension.DrawEx.BEZIER_CURVE);
 			this.drawGraphic();
 		},
 		drawingTailedsquadcombat:function(drawOnece,fun){
-			$('#ant-col').empty();
-			try{
-							templatePickerPoint.destroy();
-						}
-						catch(e){}
-						var nowDiv=document.getElementById("ant-col");
-			$('#ant-col').append(htmlElse);
+			if(isDrawPoint){
+				$('#ant-col').empty();
+				try{
+								templatePickerPoint.destroy();
+							}
+							catch(e){}
+							var nowDiv=document.getElementById("ant-col");
+				$('#ant-col').append(htmlElse);
+				isDrawPoint=false;
+				}
+
 			this.isDrawOnMapOnece = 2;
 			this.successFun = fun;
 			this.exToolbar1.activate("tailedsquadcombat");
 			this.drawGraphic();
 		},
 		exportGraphics:function(){
+			
 			var gs = this.drawingLayer.graphics;
 			var res = new Array();
 			for(var i=0;i<gs.length;i++){
